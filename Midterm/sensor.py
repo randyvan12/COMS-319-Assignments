@@ -18,7 +18,11 @@ while True:
         dictionary["humidity"] = humidity
         outfile = open("data.json", "w")
         json.dump(dictionary, outfile, indent = 4)
+        outfile.close()
         print("Temp: {:.1f} F / {:.1f} C    Humidity: {}%".format(temperature_f, temperature_c, humidity))
+        time.sleep(UPDATE_DELAY_MIN * 60.0)
     except RuntimeError as error:
         print(error.args[0])
-    time.sleep(UPDATE_DELAY_MIN * 60.0)
+        # wait a little before trying again
+        time.sleep(2.0)
+
