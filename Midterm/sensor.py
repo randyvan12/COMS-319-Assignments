@@ -3,13 +3,14 @@ import board
 import adafruit_dht
 import json
 dhtDevice = adafruit_dht.DHT11(board.D4, use_pulseio=False)
+
 while True:
     try:
         temperature_c = dhtDevice.temperature
         temperature_f = temperature_c * (9 / 5) + 32
         humidity = dhtDevice.humidity
         dictionary = {}
-
+        dictionary["date"] = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
         dictionary["temperature_f"] = temperature_f
         dictionary["temperature_c"] = temperature_c
         dictionary["humidity"] = humidity
