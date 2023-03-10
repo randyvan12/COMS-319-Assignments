@@ -10,7 +10,7 @@ while True:
         temperature_f = temperature_c * (9 / 5) + 32
         humidity = dhtDevice.humidity
         dictionary = {}
-        dictionary["date"] = time.strftime("%I:%M:%S%p %d/%m/%Y", time.gmtime())
+        dictionary["date"] = time.strftime("%I:%M:%S%p %m/%d/%Y", time.gmtime())
         dictionary["temperature_f"] = temperature_f
         dictionary["temperature_c"] = temperature_c
         dictionary["humidity"] = humidity
