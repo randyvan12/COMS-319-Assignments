@@ -4,6 +4,8 @@ import adafruit_dht
 import json
 dhtDevice = adafruit_dht.DHT11(board.D4, use_pulseio=False)
 
+UPDATE_DELAY_MIN = 5
+
 while True:
     try:
         temperature_c = dhtDevice.temperature
@@ -19,4 +21,4 @@ while True:
         print("Temp: {:.1f} F / {:.1f} C    Humidity: {}%".format(temperature_f, temperature_c, humidity))
     except RuntimeError as error:
         print(error.args[0])
-    time.sleep(2.0)
+    time.sleep(UPDATE_DELAY_MIN * 60.0)
