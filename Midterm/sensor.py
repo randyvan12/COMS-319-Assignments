@@ -13,7 +13,7 @@ while True:
         dictionary["temperature_f"] = temperature_f
         dictionary["temperature_c"] = temperature_c
         dictionary["humidity"] = humidity
-        outfile = open("output.json", "w")
+        outfile = open("data.json", "w")
         json.dump(dictionary, outfile, indent = 4)
         print("Temp: {:.1f} F / {:.1f} C    Humidity: {}%".format(temperature_f, temperature_c, humidity))
     except RuntimeError as error:
