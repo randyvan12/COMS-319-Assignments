@@ -10,19 +10,6 @@ export function Browse(props) {
     const [input, setInput] = useState("");
 
     //search bar
-    function handleFilter() {
-        let filtered = Products.filter((product) => {
-            if (input == "") {
-                return product
-            } else if (product.title.replaceAll(/\s/g, '').toLowerCase().startsWith(input.toLowerCase().replaceAll(/\s/g, ''))) {
-                return product
-            }
-        })
-        setProductsCategory(filtered);
-
-    }
-
-    //search bar
     function Change(event) {
         setInput(event.target.value)
     }
@@ -59,9 +46,6 @@ export function Browse(props) {
                         <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
                             <input type="search" class="form-control" placeholder="Search..." aria-label="Search" value={input} onChange={Change}></input>
                         </form>
-                        <div class="text-end me-2">
-                            <button type="button" class="btn btn-primary" onClick={handleFilter}>Search</button>
-                        </div>
                         <div class="text-end">
                             <button type="button" class="btn btn-warning" onClick={props.changeViewToCheckout}>Checkout</button>
                         </div>
@@ -70,7 +54,13 @@ export function Browse(props) {
             </header>
             <div class="p-5">
                 <div class="row row-cols-3 g-3">
-                    {ProductsCategory.map((product, index) => (
+                    {ProductsCategory.filter((product) => {
+                        if (input == "") {
+                            return product
+                        } else if (product.title.replaceAll(/\s/g, '').toLowerCase().startsWith(input.toLowerCase().replaceAll(/\s/g, ''))) {
+                            return product
+                        }
+                    }).map((product, index) => (
                         <div key={index} class="col">
                             <div class="card">
                                 <img src={product.image} class="card-img-top" width="720px" height="520px" />
