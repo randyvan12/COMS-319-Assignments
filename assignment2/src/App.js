@@ -2,9 +2,11 @@ import './App.css';
 import React, { useState } from "react";
 import { Browse } from './Browse';
 import { Checkout } from './Checkout';
-import { Conformation } from './Conformation';
+import { Confirmation } from './Confirmation';
+import $ from 'jquery';
 
 function App() {
+  //for div swapping
   const [state, setState] = useState('Browse')
 
   return (
@@ -18,7 +20,7 @@ function App() {
       )}
 
       {state === 'Conformation' && (
-        <Conformation changeViewToBrowse={() => setState('Browse')} />
+        <Confirmation changeViewToBrowse={() => setState('Browse')} />
       )}
     </div>
   );

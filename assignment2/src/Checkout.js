@@ -1,8 +1,9 @@
+//using bootstrap example
 export function Checkout(props) {
     return (
         <div>
             <button onClick={props.changeViewToBrowse}>Temp button to Browse</button>
-            <button onClick={props.changeViewToConformation}>Temp button to Conformation</button>
+            <button onClick={props.changeViewToConfirmation}>Temp button to Conformation</button>
             {/* <svg xmlns="http://www.w3.org/2000/svg" style="display: none">
           <symbol id="check2" viewBox="0 0 16 16">
             <path
@@ -280,7 +281,7 @@ export function Checkout(props) {
                                 <hr class="my-4" />
 
                                 <button class="w-100 btn btn-primary btn-lg" type="submit">
-                                    Continue to checkout
+                                    Confirm Order
                                 </button>
                             </form>
                         </div>
@@ -288,7 +289,7 @@ export function Checkout(props) {
                 </main>
 
                 <footer class="my-5 pt-5 text-body-secondary text-center text-small">
-                    <p class="mb-1">&copy; 2017–2023 Company Name</p>
+                    <p class="mb-1">&copy; 2017-2023 Company Name</p>
                     <ul class="list-inline">
                         <li class="list-inline-item"><a href="#">Privacy</a></li>
                         <li class="list-inline-item"><a href="#">Terms</a></li>

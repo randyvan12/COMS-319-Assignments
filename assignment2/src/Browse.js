@@ -1,7 +1,49 @@
+// Using bootstrap example
+import { Products } from "./Products";
+import React, { useState } from "react";
+
 export function Browse(props) {
+    //For the list of products
+    const [ProductsCategory, setProductsCategory] = useState(Products);
+
+    //for the search bar
+    const [input, setInput] = useState("");
+
+    //search bar
+    function handleFilter() {
+        let filtered = Products.filter((product) => {
+            if (input == "") {
+                return product
+            } else if (product.title.replaceAll(/\s/g, '').toLowerCase().startsWith(input.toLowerCase().replaceAll(/\s/g, ''))) {
+                return product
+            }
+        })
+        setProductsCategory(filtered);
+
+    }
+
+    //search bar
+    function Change(event) {
+        setInput(event.target.value)
+    }
+
+    //For the product cards with counters
+    function Cards() {
+        const [counter, setCounter] = useState(1);
+
+        return (
+            <div class="input-group w-auto justify-content-end align-items-center d-flex justify-content-center">
+                <input type="button" value="-" class="button-minus border rounded-circle  icon-shape icon-sm mx-1 "
+                    data-field="quantity" onClick={() => setCounter(counter - 1)}></input>
+                <div type="number" name="quantity"
+                    class="quantity-field border-0 text-center w-25">{counter}</div>
+                <input type="button" value="+" class="button-plus border rounded-circle icon-shape icon-sm "
+                    data-field="quantity" onClick={() => setCounter(counter + 1)}></input>
+            </div>
+        )
+    }
     return (
         <div>
-            <button onClick={props.changeViewToCheckout}>Temp button to Checkout</button>
             <header class="p-3 mb-3 border-bottom">
                 <div class="container">
                     <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
@@ -11,150 +53,45 @@ export function Browse(props) {
                         </a>
 
                         <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                            <li><a href="#" class="nav-link px-2 link-secondary">Overview</a></li>
-                            <li><a href="#" class="nav-link px-2 link-body-emphasis">Inventory</a></li>
-                            <li><a href="#" class="nav-link px-2 link-body-emphasis">Customers</a></li>
-                            <li><a href="#" class="nav-link px-2 link-body-emphasis">Products</a></li>
+                            <li><a href="#" class="nav-link px-2 link-body-emphasis">All Products</a></li>
                         </ul>
 
                         <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
-                            <input type="search" class="form-control" placeholder="Search..." aria-label="Search"></input>
+                            <input type="search" class="form-control" placeholder="Search..." aria-label="Search" value={input} onChange={Change}></input>
                         </form>
-
+                        <div class="text-end me-2">
+                            <button type="button" class="btn btn-primary" onClick={handleFilter}>Search</button>
+                        </div>
                         <div class="text-end">
-                            <button type="button" class="btn btn-warning">Checkout</button>
+                            <button type="button" class="btn btn-warning" onClick={props.changeViewToCheckout}>Checkout</button>
                         </div>
                     </div>
                 </div>
             </header>
             <div class="p-5">
-
                 <div class="row row-cols-3 g-3">
-                    <div class="col">
-                        <div class="card">
-                            <img src="https://mdbcdn.b-cdn.net/img/new/standard/city/041.webp" class="card-img-top"
-                                alt="Hollywood Sign on The Hill" />
-                            <div class="card-body">
-                                <h5 class="card-title">Card title</h5>
-                                <p class="card-text">
-                                    This is a longer card with supporting text below as a natural lead-in to
-                                    additional content. This content is a little bit longer.
-                                </p>
-                                <div class="input-group w-auto justify-content-end align-items-center d-flex justify-content-center">
-                                    <input type="button" value="-" class="button-minus border rounded-circle  icon-shape icon-sm mx-1 "
-                                        data-field="quantity"></input>
-                                    <input type="number" step="1" max="10" value="1" name="quantity"
-                                        class="quantity-field border-0 text-center w-25"></input>
-                                    <input type="button" value="+" class="button-plus border rounded-circle icon-shape icon-sm "
-                                        data-field="quantity"></input>
+                    {ProductsCategory.map((product, index) => (
+                        <div key={index} class="col">
+                            <div class="card">
+                                <img src={product.image} class="card-img-top" width="720px" height="520px" />
+                                <div class="card-body">
+                                    <h5 class="card-title">{product.title}</h5>
+                                    <p class="card-text" >
+                                        {product.description}
+                                    </p>
+                                    <div>
+                                        <p class="card-text" >
+                                            Price = ${product.price}
+                                        </p>
+                                        <Cards />
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col">
-                        <div class="card">
-                            <img src="https://mdbcdn.b-cdn.net/img/new/standard/city/042.webp" class="card-img-top"
-                                alt="Palm Springs Road" />
-                            <div class="card-body">
-                                <h5 class="card-title">Card title</h5>
-                                <p class="card-text">
-                                    This is a longer card with supporting text below as a natural lead-in to
-                                    additional content. This content is a little bit longer.
-                                </p>
-                                <div class="input-group w-auto justify-content-end align-items-center d-flex justify-content-center">
-                                    <input type="button" value="-" class="button-minus border rounded-circle  icon-shape icon-sm mx-1 "
-                                        data-field="quantity"></input>
-                                    <input type="number" step="1" max="10" value="1" name="quantity"
-                                        class="quantity-field border-0 text-center w-25"></input>
-                                    <input type="button" value="+" class="button-plus border rounded-circle icon-shape icon-sm "
-                                        data-field="quantity"></input>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="card">
-                            <img src="https://mdbcdn.b-cdn.net/img/new/standard/city/043.webp" class="card-img-top"
-                                alt="Los Angeles Skyscrapers" />
-                            <div class="card-body">
-                                <h5 class="card-title">Card title</h5>
-                                <p class="card-text">This is a longer card with supporting text below as a natural lead-in to
-                                    additional content.</p>
-                                <div class="input-group w-auto justify-content-end align-items-center d-flex justify-content-center">
-                                    <input type="button" value="-" class="button-minus border rounded-circle  icon-shape icon-sm mx-1 "
-                                        data-field="quantity"></input>
-                                    <input type="number" step="1" max="10" value="1" name="quantity"
-                                        class="quantity-field border-0 text-center w-25"></input>
-                                    <input type="button" value="+" class="button-plus border rounded-circle icon-shape icon-sm "
-                                        data-field="quantity"></input>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="card">
-                            <img src="https://mdbcdn.b-cdn.net/img/new/standard/city/044.webp" class="card-img-top" alt="Skyscrapers" />
-                            <div class="card-body">
-                                <h5 class="card-title">Card title</h5>
-                                <p class="card-text">
-                                    This is a longer card with supporting text below as a natural lead-in to
-                                    additional content.
-                                </p>
-                                <div class="input-group w-auto justify-content-end align-items-center d-flex justify-content-center">
-                                    <input type="button" value="-" class="button-minus border rounded-circle  icon-shape icon-sm mx-1 "
-                                        data-field="quantity"></input>
-                                    <input type="number" step="1" max="10" value="1" name="quantity"
-                                        class="quantity-field border-0 text-center w-25"></input>
-                                    <input type="button" value="+" class="button-plus border rounded-circle icon-shape icon-sm "
-                                        data-field="quantity"></input>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="card">
-                            <img src="https://mdbcdn.b-cdn.net/img/new/standard/city/046.webp" class="card-img-top" alt="Skyscrapers" />
-                            <div class="card-body">
-                                <h5 class="card-title">Card title</h5>
-                                <p class="card-text">
-                                    This is a longer card with supporting text below as a natural lead-in to
-                                    additional content. This content is a little bit longer.
-                                </p>
-                                <div class="input-group w-auto justify-content-end align-items-center d-flex justify-content-center">
-                                    <input type="button" value="-" class="button-minus border rounded-circle  icon-shape icon-sm mx-1 "
-                                        data-field="quantity"></input>
-                                    <input type="number" step="1" max="10" value="1" name="quantity"
-                                        class="quantity-field border-0 text-center w-25"></input>
-                                    <input type="button" value="+" class="button-plus border rounded-circle icon-shape icon-sm "
-                                        data-field="quantity"></input>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="card">
-                            <img src="https://mdbcdn.b-cdn.net/img/new/standard/city/050.webp" class="card-img-top" alt="Skyscrapers" />
-                            <div class="card-body">
-                                <h5 class="card-title">Card title</h5>
-                                <p class="card-text">
-                                    This is a longer card with supporting text below as a natural lead-in to
-                                    additional content. This content is a little bit longer.
-                                </p>
-                                <div class="input-group w-auto justify-content-end align-items-center d-flex justify-content-center">
-                                    <input type="button" value="-" class="button-minus border rounded-circle  icon-shape icon-sm mx-1 "
-                                        data-field="quantity"></input>
-                                    <input type="number" step="1" max="10" value="1" name="quantity"
-                                        class="quantity-field border-0 text-center w-25"></input>
-                                    <input type="button" value="+" class="button-plus border rounded-circle icon-shape icon-sm "
-                                        data-field="quantity"></input>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    ))}
                 </div>
-
             </div>
-
         </div>
     )
 }
+
