@@ -63,7 +63,7 @@ export function Browse(props) {
                     }).map((product, index) => (
                         <div key={index} class="col">
                             <div class="card">
-                                <img src={product.image} class="card-img-top" width="720px" height="520px" />
+                                <img src={product.image} class="card-img-top" width="370px" height="640px" />
                                 <div class="card-body">
                                     <h5 class="card-title">{product.title}</h5>
                                     <p class="card-text" >
