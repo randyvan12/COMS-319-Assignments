@@ -1,5 +1,5 @@
 import './App.css';
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Browse } from './Browse';
 import { Checkout } from './Checkout';
 import { Confirmation } from './Confirmation';
@@ -7,66 +7,24 @@ import { Confirmation } from './Confirmation';
 function App() {
   //for div swapping
   const [state, setState] = useState('Browse')
-
-  //for cart
-  // const [cart, setCart] = useState([]);
-  // const [cartTotal, setCartTotal] = useState(0);
-
-  // useEffect(() => {
-  //   total();
-  // }, [cart]);
-
-  // const total = () => {
-  //   let totalVal = 0;
-  //   for (let i = 0; i < cart.length; i++) {
-  //     totalVal += cart[i].price;
-  //   }
-  //   setCartTotal(totalVal);
-  // };
-
-  // const addToCart = (el) => {
-  //   setCart([...cart, el]);
-  // };
-
-  // const removeFromCart = (el) => {
-  //   let hardCopy = [...cart];
-  //   hardCopy = hardCopy.filter((cartItem) => cartItem.id !== el.id);
-  //   setCart(hardCopy);
-  // };
-
-  // const cartItems = cart.map((el) => (
-  //   <div key={el.id}>
-  //     <img class="img-fluid" src={el.image} width={30} />
-  //     {el.title}
-  //     ${el.price}
-  //   </div>
-  // ));
-
-  // const listItems = items.map((el) => (
-  //   <div key={el.id}>
-  //     <img class="img-fluid" src={el.image} />
-  //     {el.title}
-  //     {el.category}
-  //     {el.price}
-  //     <button type="button" onClick={() => removeFromCart(el)}>-</button>{" "}
-  //     <button type="button" variant="light" onClick={() => addToCart(el)}> + </button>
-  //   </div>
-  // ));
+  const [cartList, setCartList] = useState([])
+  const [totalCost, setTotalCost] = useState(0);
 
   return (
     <div>
       {state === 'Browse' && (
-        <Browse changeViewToCheckout={() => setState('Checkout')} />
+        <Browse changeViewToCheckout={() => setState('Checkout')} setCartList={setCartList} setTotalCost={setTotalCost} />
       )}
 
       {state === 'Checkout' && (
-        <Checkout changeViewToBrowse={() => setState('Browse')} changeViewToConformation={() => setState('Conformation')} />
+        <Checkout changeViewToBrowse={() => setState('Browse')} changeViewToConfirmation={() => setState('Confirmation')} cartList={cartList} totalCost={totalCost}/>
       )}
 
-      {state === 'Conformation' && (
+      {state === 'Confirmation' && (
         <Confirmation changeViewToBrowse={() => setState('Browse')} />
       )}
     </div>
   );
 }
+
 export default App;

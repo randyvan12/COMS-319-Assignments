@@ -1,6 +1,6 @@
 // Using bootstrap example
 import { Products } from "./Products";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export function Browse(props) {
     //For the list of products
@@ -8,6 +8,39 @@ export function Browse(props) {
 
     //for the search bar
     const [input, setInput] = useState("");
+    const [cart, setCart] = useState([]);
+    const [cartTotal, setCartTotal] = useState(0);
+
+    useEffect(() => {
+        total();
+    }, [cart]);
+
+    const total = () => {
+        let totalVal = 0;
+        for (let i = 0; i < cart.length; i++) {
+            totalVal += cart[i].price;
+        }
+        setCartTotal(totalVal);
+    };
+
+    const addToCart = (el) => {
+        setCart([...cart, el]);
+    };
+
+    const removeFromCart = (el) => {
+        let hardCopy = [...cart];
+        hardCopy = hardCopy.filter((cartItem) => cartItem.id !== el.id);
+        setCart(hardCopy);
+    };
+
+    const cartItems = cart.map((el) => (
+        <li key={el.id} class="list-group-item d-flex justify-content-between lh-sm">
+            <img class="img-fluid" src={el.image} width={30} />
+            <h6 class="my-0">{el.title}</h6>
+
+            <span class="text-body-secondary">${el.price}</span>
+        </li>
+    ));
 
     //search bar
     function Change(event) {
@@ -15,20 +48,21 @@ export function Browse(props) {
     }
 
     //For the product cards with counters
-    function Cards() {
+    function Cards(props) {
         const [counter, setCounter] = useState(1);
 
         return (
             <div class="input-group w-auto justify-content-end align-items-center d-flex justify-content-center">
                 <input type="button" value="-" class="button-minus border rounded-circle  icon-shape icon-sm mx-1 "
-                    data-field="quantity" onClick={() => setCounter(counter - 1)}></input>
+                    data-field="quantity" onClick={() => { setCounter(counter - 1); removeFromCart(props.product) }}></input>
                 <div type="number" name="quantity"
                     class="quantity-field border-0 text-center w-25">{counter}</div>
-                <input type="button" value="+" class="button-plus border rounded-circle icon-shape icon-sm "
-                    data-field="quantity" onClick={() => setCounter(counter + 1)}></input>
+                <input type="button" value="+" class="button-plus border rounded-circle icon-shape icon-sm"
+                    data-field="quantity" onClick={() => { setCounter(counter + 1); addToCart(props.product) }}></input>
             </div>
         )
     }
+
     return (
         <div>
             <header class="p-3 mb-3 border-bottom">
@@ -47,7 +81,7 @@ export function Browse(props) {
                             <input type="search" class="form-control" placeholder="Search..." aria-label="Search" value={input} onChange={Change}></input>
                         </form>
                         <div class="text-end">
-                            <button type="button" class="btn btn-warning" onClick={props.changeViewToCheckout}>Checkout</button>
+                            <button type="button" class="btn btn-warning" onClick={() => { props.changeViewToCheckout(); props.setCartList(cartItems); props.setTotalCost((cartTotal * 0.05) + cartTotal);}}>Checkout</button>
                         </div>
                     </div>
                 </div>
@@ -73,13 +107,14 @@ export function Browse(props) {
                                         <p class="card-text" >
                                             Price = ${product.price}
                                         </p>
-                                        <Cards />
+                                        <Cards product={product} />
                                     </div>
                                 </div>
                             </div>
                         </div>
                     ))}
                 </div>
+
             </div>
         </div>
     )

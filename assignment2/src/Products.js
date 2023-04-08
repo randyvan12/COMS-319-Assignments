@@ -31,7 +31,7 @@ export const Products = [
       "id": 5,
       "title": "Ultimate Ears - HYPERBOOM Portable Bluetooth Waterproof Speaker with Big Bass - Black",
       "price": 390.99,
-      "description": "HYPERBOOM rocks a supermassive sound that takes your party into the stratosphere. Believe the hype—it’s got extreme bass and an adaptive EQ that automatically customizes the sound to fill any space. Four input channels let you easily switch music between different devices, while the rechargeable battery rocks the party for up to 24 hours.",
+      "description": "HYPERBOOM rocks a supermassive sound that takes your party into the stratosphere. Believe the hype—it's got extreme bass and an adaptive EQ that automatically customizes the sound to fill any space. Four input channels let you easily switch music between different devices, while the rechargeable battery rocks the party for up to 24 hours.",
       "image": "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6398/6398427ld.jpg;maxHeight=640;maxWidth=550",
     },
     {
