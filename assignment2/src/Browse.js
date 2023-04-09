@@ -49,7 +49,7 @@ export function Browse(props) {
 
     //For the product cards with counters
     function Cards(props) {
-        const [counter, setCounter] = useState(1);
+        const [counter, setCounter] = useState(0);
 
         return (
             <div class="input-group w-auto justify-content-end align-items-center d-flex justify-content-center">

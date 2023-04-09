@@ -1,56 +1,12 @@
 //using bootstrap example
 //https://www.youtube.com/watch?v=EYpdEYK25Dc
-import { useState, useEffect } from "react";
 
 export function Checkout(props) {
-    const initialValues = { username: "", email: "", password: "" };
-    const [formValues, setFormValues] = useState(initialValues);
-    const [formErrors, setFormErrors] = useState({});
-    const [isSubmit, setIsSubmit] = useState(false);
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormValues({ ...formValues, [name]: value });
-    };
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        setFormErrors(validate(formValues));
-        setIsSubmit(true);
-    };
-    useEffect(() => {
-        console.log(formErrors);
-        if (Object.keys(formErrors).length === 0 && isSubmit) {
-            console.log(formValues);
-        }
-    }, [formErrors]);
-    const validate = (values) => {
-        const errors = {};
-        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
-        if (!values.username) {
-            errors.username = "Username is required!";
-        }
-        if (!values.email) {
-            errors.email = "Email is required!";
-        } else if (!regex.test(values.email)) {
-            errors.email = "This is not a valid email format!";
-        }
-        if (!values.password) {
-            errors.password = "Password is required";
-        } else if (values.password.length < 4) {
-            errors.password = "Password must be more than 4 characters";
-        } else if (values.password.length > 10) {
-            errors.password = "Password cannot exceed more than 10 characters";
-        }
-        return errors;
-    };
+
     return (
         <div>
             <button onClick={props.changeViewToBrowse}>Temp button to Browse</button>
-            <button onClick={props.changeViewToConfirmation}>Temp button to Confirmation</button>
-            {Object.keys(formErrors).length === 0 && isSubmit ? (
-                <div className="ui message success">Signed in successfully</div>
-            ) : (
-                <pre>{JSON.stringify(formValues, undefined, 2)}</pre>
-            )}
+            <button onClick={props.changeViewToConfirmation}>Temp button to Conformation</button>
             <div class="container">
                 <main>
                     <div class="py-5 text-center">
@@ -92,15 +48,17 @@ export function Checkout(props) {
                                 <div class="row g-3">
                                     <div class="col-sm-12">
                                         <label for="firstName" class="form-label">Name</label>
-                                        <input type="text" class="form-control" id="firstName" placeholder="" value={formValues.username} onChange={handleChange}/>
-                                        <p>{formErrors.username}</p>
+                                        <input type="text" class="form-control" id="firstName" placeholder="" value="" required />
+                                        <div class="invalid-feedback">
+                                            Valid first name is required.
+                                        </div>
                                     </div>
 
 
                                     <div class="col-12">
                                         <label for="email" class="form-label">Email
                                             <span class="text-body-secondary">(Optional)</span></label>
-                                        <input type="email" class="form-control" id="email" placeholder="you@example.com" />
+                                        <input type="email" class="form-control" id="email" placeholder="you@example.com" required />
                                         <div class="invalid-feedback">
                                             Please enter a valid email address for shipping updates.
                                         </div>
@@ -206,7 +164,7 @@ export function Checkout(props) {
 
                                 <hr class="my-4" />
 
-                                <button class="w-100 btn btn-primary btn-lg" type="submit" onSubmit={handleSubmit}>
+                                <button class="w-100 btn btn-primary btn-lg" type="submit">
                                     Confirm Order
                                 </button>
                             </form>
