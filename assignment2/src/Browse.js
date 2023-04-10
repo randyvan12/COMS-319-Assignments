@@ -91,7 +91,7 @@ export function Browse(props) {
                     {ProductsCategory.filter((product) => {
                         if (input == "") {
                             return product
-                        } else if (product.title.replaceAll(/\s/g, '').toLowerCase().startsWith(input.toLowerCase().replaceAll(/\s/g, ''))) {
+                        } else if (product.title.replaceAll(/\s/g, '').toLowerCase().includes(input.toLowerCase().replaceAll(/\s/g, ''))) {
                             return product
                         }
                     }).map((product, index) => (
