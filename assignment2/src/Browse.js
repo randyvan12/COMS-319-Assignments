@@ -1,10 +1,10 @@
 // Using bootstrap example
-import { Products } from "./Products";
+import products from "./products.json";
 import React, { useState, useEffect } from "react";
 
 export function Browse(props) {
     //For the list of products
-    const [ProductsCategory, setProductsCategory] = useState(Products);
+    const [ProductsCategory, setProductsCategory] = useState(products);
 
     //for the search bar
     const [input, setInput] = useState("");
