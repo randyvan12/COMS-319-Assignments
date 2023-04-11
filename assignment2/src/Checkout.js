@@ -1,7 +1,26 @@
 //using bootstrap example
 //https://www.youtube.com/watch?v=EYpdEYK25Dc
 
+import products from "./products.json";
+
+const prodById = new Map();
+
+console.debug("product map", prodById)
+
+for (let prod of products) {
+    prodById.set(prod.id, prod);
+}
+
 export function Checkout(props) {
+    const items = [...props.cart]
+
+    let totalCost = 0;
+    let itemCount = 0
+    for (let [id, quantity] of items) {
+        let price = prodById.get(id).price;
+        totalCost += price * quantity;
+        itemCount += quantity;
+    }
 
     return (
         <div>
@@ -23,24 +42,25 @@ export function Checkout(props) {
                         <div class="col-md-5 col-lg-4 order-md-last">
                             <h4 class="d-flex justify-content-between align-items-center mb-3">
                                 <span class="text-primary">Your cart</span>
-                                <span class="badge bg-primary rounded-pill">3</span>
+                                <span class="badge bg-primary rounded-pill">{itemCount}</span>
                             </h4>
                             <ul class="list-group mb-3">
-                                {props.cartList}
+                                {/* {cartList} */}
+                                <CartList items={items}/>
                                 <li class="list-group-item d-flex justify-content-between">
                                     <span>Total (USD)</span>
-                                    <strong>${props.totalCost}</strong>
+                                    <strong>${totalCost}</strong>
                                 </li>
                             </ul>
 
-                            <form class="card p-2">
+                            {/* <form class="card p-2">
                                 <div class="input-group">
                                     <input type="text" class="form-control" placeholder="Promo code" />
                                     <button type="submit" class="btn btn-secondary">
                                         Redeem
                                     </button>
                                 </div>
-                            </form>
+                            </form> */}
                         </div>
                         <div class="col-md-7 col-lg-8">
                             <h4 class="mb-3">Billing address</h4>
@@ -174,4 +194,29 @@ export function Checkout(props) {
             </div>
         </div>
     );
+}
+
+function CartList({items}) {
+
+
+    const cartList = items.map(([prodId, quantity]) => {
+        console.debug("Indexing product catalog: ", prodById);
+        console.debug("Indexing with:", prodId);
+        let i = prodById.get(prodId);
+        console.debug("Result:", i);
+
+     return (
+        <li key={i.id} class="list-group-item d-flex justify-content-between lh-sm">
+            <img class="img-fluid" src={i.image} alt={i.title} width={30} />
+            <h6 class="my-0">{i.title}</h6>
+            <span class="text-body-secondary">${i.price}</span>
+            <span class="text-body-secondary">&nbsp;x&nbsp;{quantity}</span>
+        </li>
+    )});
+
+    return (
+        <>
+        {cartList}
+        </>
+    )
 }

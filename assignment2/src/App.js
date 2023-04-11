@@ -8,16 +8,17 @@ function App() {
   //for div swapping
   const [state, setState] = useState('Browse')
   const [cartList, setCartList] = useState([])
-  const [totalCost, setTotalCost] = useState(0);
+  const [cart, setCart] = useState(new Map())
+  const [totalCost, setTotalCost] = useState(0)
 
   return (
     <div>
       {state === 'Browse' && (
-        <Browse changeViewToCheckout={() => setState('Checkout')} setCartList={setCartList} setTotalCost={setTotalCost} />
+        <Browse changeViewToCheckout={() => setState('Checkout')} setCartList={setCartList} setTotalCost={setTotalCost} cart={cart} setCart={setCart} />
       )}
 
       {state === 'Checkout' && (
-        <Checkout changeViewToBrowse={() => setState('Browse')} changeViewToConfirmation={() => setState('Confirmation')} cartList={cartList} totalCost={totalCost}/>
+        <Checkout changeViewToBrowse={() => setState('Browse')} changeViewToConfirmation={() => setState('Confirmation')} cart={cart} />
       )}
 
       {state === 'Confirmation' && (

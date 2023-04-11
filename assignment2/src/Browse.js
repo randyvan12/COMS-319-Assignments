@@ -1,46 +1,71 @@
 // Using bootstrap example
+import { CardGroup } from "react-bootstrap";
 import products from "./products.json";
 import React, { useState, useEffect } from "react";
 
 export function Browse(props) {
+    let {changeViewToCheckout, setCartList, setTotalCost, cart, setCart} = props;
     //For the list of products
     const [ProductsCategory, setProductsCategory] = useState(products);
 
     //for the search bar
     const [input, setInput] = useState("");
-    const [cart, setCart] = useState([]);
     const [cartTotal, setCartTotal] = useState(0);
 
     useEffect(() => {
         total();
     }, [cart]);
 
-    const addToCart = (item) => {
-        setCart([...cart, item]);
+    const addToCart = (product) => {
+        console.debug(`adding to cart:`, product)
+
+        let oldCount = cart.get(product.id);
+        if (isNaN(oldCount)) oldCount = 0;
+        
+        cart.set(product.id, oldCount+1)
+
+
+        console.debug(cart)
+        setCart(new Map(cart));
     };
 
-    const removeFromCart = (item) => {
-        let hardCopy = [...cart];
-        hardCopy = hardCopy.filter((cartItem) => cartItem.id !== item.id);
-        setCart(hardCopy);
+    const removeFromCart = (product) => {
+        let count = cart.get(product.id);
+        
+        if (!isNaN(count)) {
+            count--;
+        }
+
+        // if NaN or less than zero: remove it from cart
+        if (isNaN(count) || count <= 0) {
+            cart.delete(product.id);
+        } else {
+            // else update new count
+            cart.set(product.id, count);
+        }
+
+        console.debug(cart);
+
+        setCart(new Map(cart));
     };
 
     const total = () => {
-        let totalVal = 0;
-        for (let i = 0; i < cart.length; i++) {
-            totalVal += cart[i].price;
+        let total = 0;
+
+        for (let product of cart.values()) {
+            total += product.price * product.count;
         }
-        setCartTotal(totalVal);
+        setCartTotal(total);
     };
 
-    const cartItems = cart.map((el) => (
-        <li key={el.id} class="list-group-item d-flex justify-content-between lh-sm">
-            <img class="img-fluid" src={el.image} width={30} />
-            <h6 class="my-0">{el.title}</h6>
+    // const cartItems = cart.map((el) => (
+    //     <li key={el.id} class="list-group-item d-flex justify-content-between lh-sm">
+    //         <img class="img-fluid" src={el.image} width={30} />
+    //         <h6 class="my-0">{el.title}</h6>
 
-            <span class="text-body-secondary">${el.price}</span>
-        </li>
-    ));
+    //         <span class="text-body-secondary">${el.price}</span>
+    //     </li>
+    // ));
 
     //search bar
     function Change(event) {
@@ -67,7 +92,7 @@ export function Browse(props) {
                             <input type="search" class="form-control" placeholder="Search..." aria-label="Search" value={input} onChange={Change}></input>
                         </form>
                         <div class="text-end">
-                            <button type="button" class="btn btn-warning" onClick={() => { props.changeViewToCheckout(); props.setCartList(cartItems); props.setTotalCost((cartTotal * 0.05) + cartTotal);}}>Checkout</button>
+                            <button type="button" class="btn btn-warning" onClick={() => { changeViewToCheckout(); setTotalCost((cartTotal * 0.05) + cartTotal);}}>Checkout</button>
                         </div>
                     </div>
                 </div>
@@ -83,7 +108,7 @@ export function Browse(props) {
                     }).map((product, index) => (
                         <div key={index} class="col">
                             <div class="card">
-                                <img src={product.image} class="card-img-top" width="370px" height="640px" />
+                                <img src={product.image} alt={product.image} class="card-img-top" width="370px" height="640px" />
                                 <div class="card-body">
                                     <h5 class="card-title">{product.title}</h5>
                                     <p class="card-text" >
@@ -93,7 +118,7 @@ export function Browse(props) {
                                         <p class="card-text" >
                                             Price = ${product.price}
                                         </p>
-                                        <Cards product={product} addToCart={addToCart} removeFromCart={removeFromCart}/>
+                                        <Cards product={product} productCount={cart.get(product.id) || 0} addToCart={addToCart} removeFromCart={removeFromCart}/>
                                     </div>
                                 </div>
                             </div>
@@ -107,13 +132,16 @@ export function Browse(props) {
 }
 
 //For the product cards with counters
-function Cards({product, addToCart, removeFromCart}) {
-    const [counter, setCounter] = useState(0);
+function Cards({product, productCount, addToCart, removeFromCart}) {
+    const [counter, setCounter] = useState(productCount);
 
     return (
         <div class="input-group w-auto justify-content-end align-items-center d-flex justify-content-center">
             <input type="button" value="-" class="button-minus border rounded-circle  icon-shape icon-sm mx-1 "
-                data-field="quantity" onClick={() => { setCounter(counter - 1); removeFromCart(product) }}></input>
+                data-field="quantity" onClick={() => {
+                    if (counter - 1 >= 0) setCounter(counter - 1);
+                    removeFromCart(product);
+                }}></input>
             <div type="number" name="quantity"
                 class="quantity-field border-0 text-center w-25">{counter}</div>
             <input type="button" value="+" class="button-plus border rounded-circle icon-shape icon-sm"
