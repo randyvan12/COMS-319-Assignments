@@ -5,11 +5,10 @@ import products from "./products.json";
 
 const prodById = new Map();
 
-console.debug("product map", prodById)
-
 for (let prod of products) {
     prodById.set(prod.id, prod);
 }
+
 
 export function Checkout(props) {
     const items = [...props.cart]
@@ -24,10 +23,9 @@ export function Checkout(props) {
 
     return (
         <div>
-            <button onClick={props.changeViewToBrowse}>Temp button to Browse</button>
-            <button onClick={props.changeViewToConfirmation}>Temp button to Conformation</button>
             <div class="container">
                 <main>
+                <button class="btn btn-warning" onClick={props.changeViewToBrowse}>Continue Browsing</button>
                     <div class="py-5 text-center">
                         <h2>Checkout form</h2>
                         <p class="lead">
@@ -53,22 +51,14 @@ export function Checkout(props) {
                                 </li>
                             </ul>
 
-                            {/* <form class="card p-2">
-                                <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Promo code" />
-                                    <button type="submit" class="btn btn-secondary">
-                                        Redeem
-                                    </button>
-                                </div>
-                            </form> */}
                         </div>
                         <div class="col-md-7 col-lg-8">
                             <h4 class="mb-3">Billing address</h4>
-                            <form class="needs-validation" novalidate>
+                            <form class="needs-validation" id="checkout-form" novalidate onSubmit={(e) => {handleSubmit(e, props)}} >
                                 <div class="row g-3">
                                     <div class="col-sm-12">
-                                        <label for="firstName" class="form-label">Name</label>
-                                        <input type="text" class="form-control" id="firstName" placeholder="" value="" required />
+                                        <label for="fullname" class="form-label">Full Name</label>
+                                        <input type="text" class="form-control" id="fullname" placeholder="" required />
                                         <div class="invalid-feedback">
                                             Valid first name is required.
                                         </div>
@@ -76,8 +66,7 @@ export function Checkout(props) {
 
 
                                     <div class="col-12">
-                                        <label for="email" class="form-label">Email
-                                            <span class="text-body-secondary">(Optional)</span></label>
+                                        <label for="email" class="form-label">Email</label>
                                         <input type="email" class="form-control" id="email" placeholder="you@example.com" required />
                                         <div class="invalid-feedback">
                                             Please enter a valid email address for shipping updates.
@@ -85,28 +74,33 @@ export function Checkout(props) {
                                     </div>
 
                                     <div class="col-12">
-                                        <label for="address" class="form-label">Address</label>
-                                        <input type="text" class="form-control" id="address" placeholder="1234 Main St" required />
+                                        <label for="address" class="form-label">Address 1</label>
+                                        <input type="text" class="form-control" id="address1" placeholder="1234 Main St" required />
+                                        <div class="invalid-feedback">
+                                            Please enter your shipping address.
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <label for="address1" class="form-label">Address 2
+                                        <span class="text-body-secondary"> (Optional)</span></label>
+                                        <input type="text" class="form-control" id="address2" placeholder="" />
                                         <div class="invalid-feedback">
                                             Please enter your shipping address.
                                         </div>
                                     </div>
 
                                     <div class="col-md-5">
-                                        <label for="country" class="form-label">Country</label>
-                                        <select class="form-select" id="country" required>
-                                            <option value="">Choose...</option>
-                                            <option>United States</option>
-                                        </select>
-                                        <div class="invalid-feedback">
-                                            Please select a valid country.
-                                        </div>
+                                        <label for="city" class="form-label">City</label>
+                                        <input type="text" class="form-control" id="city" required />
+                                        <div class="invalid-feedback">Please select a valid country.</div>
                                     </div>
 
                                     <div class="col-md-4">
                                         <label for="state" class="form-label">State</label>
                                         <select class="form-select" id="state" required>
                                             <option value="">Choose...</option>
+                                            <option>Iowa</option>
                                             <option>California</option>
                                         </select>
                                         <div class="invalid-feedback">
@@ -116,14 +110,14 @@ export function Checkout(props) {
 
                                     <div class="col-md-3">
                                         <label for="zip" class="form-label">Zip</label>
-                                        <input type="text" class="form-control" id="zip" placeholder="" required />
+                                        <input type="text" class="form-control" id="zip" placeholder="12345" pattern={"[0-9]+"} required minLength="5" maxLength="5"/>
                                         <div class="invalid-feedback">Zip code required.</div>
                                     </div>
                                 </div>
 
                                 <hr class="my-4" />
 
-                                <div class="form-check">
+                                {/* <div class="form-check">
                                     <input type="checkbox" class="form-check-input" id="same-address" />
                                     <label class="form-check-label" for="same-address">Shipping address is the same as my billing
                                         address</label>
@@ -132,13 +126,13 @@ export function Checkout(props) {
                                 <div class="form-check">
                                     <input type="checkbox" class="form-check-input" id="save-info" />
                                     <label class="form-check-label" for="save-info">Save this information for next time</label>
-                                </div>
+                                </div> */}
 
-                                <hr class="my-4" />
+                                {/* <hr class="my-4" /> */}
 
-                                <h4 class="mb-3">Payment</h4>
+                                <h4 class="mb-3">Credit card details</h4>
 
-                                <div class="my-3">
+                                {/* <div class="my-3">
                                     <div class="form-check">
                                         <input id="credit" name="paymentMethod" type="radio" class="form-check-input" checked required />
                                         <label class="form-check-label" for="credit">Credit card</label>
@@ -151,7 +145,7 @@ export function Checkout(props) {
                                         <input id="paypal" name="paymentMethod" type="radio" class="form-check-input" required />
                                         <label class="form-check-label" for="paypal">PayPal</label>
                                     </div>
-                                </div>
+                                </div> */}
 
                                 <div class="row gy-3">
                                     <div class="col-md-6">
@@ -171,13 +165,13 @@ export function Checkout(props) {
 
                                     <div class="col-md-3">
                                         <label for="cc-expiration" class="form-label">Expiration</label>
-                                        <input type="text" class="form-control" id="cc-expiration" placeholder="" required />
+                                        <input type="date" class="form-control" id="cc-expiration" placeholder="" required />
                                         <div class="invalid-feedback">Expiration date required</div>
                                     </div>
 
                                     <div class="col-md-3">
                                         <label for="cc-cvv" class="form-label">CVV</label>
-                                        <input type="text" class="form-control" id="cc-cvv" placeholder="" required />
+                                        <input type="text" class="form-control" id="cc-cvv" placeholder="" minLength="3" maxLength="3" required />
                                         <div class="invalid-feedback">Security code required</div>
                                     </div>
                                 </div>
@@ -200,23 +194,54 @@ function CartList({items}) {
 
 
     const cartList = items.map(([prodId, quantity]) => {
-        console.debug("Indexing product catalog: ", prodById);
-        console.debug("Indexing with:", prodId);
         let i = prodById.get(prodId);
-        console.debug("Result:", i);
 
-     return (
+        return (
         <li key={i.id} class="list-group-item d-flex justify-content-between lh-sm">
             <img class="img-fluid" src={i.image} alt={i.title} width={30} />
             <h6 class="my-0">{i.title}</h6>
             <span class="text-body-secondary">${i.price}</span>
             <span class="text-body-secondary">&nbsp;x&nbsp;{quantity}</span>
-        </li>
-    )});
+        </li>)
+    });
 
-    return (
-        <>
-        {cartList}
-        </>
-    )
+    return (<>{cartList}</>)
+}
+
+function handleSubmit(event, props) {
+    event.preventDefault();
+    let form = event.target;
+
+    let {
+        fullname,
+        email,
+        address1,
+        address2,
+        city,
+        state,
+        zip
+    } = form;
+
+    let order = {
+        // shipping
+        fullname: fullname.value,
+        email: email.value,
+        address1: address1.value,
+        address2: address2.value,
+        city: city.value,
+        state: state.value,
+        zip: zip.value,
+
+        // billing
+        cardNumber: form["cc-number"].value,
+        cardName: form["cc-name"].value,
+        cardExp: form["cc-expiration"].value,
+        cardCVV: form["cc-cvv"].value,
+
+        // time
+        date: new Date(),
+    }
+
+    // call new structure, setting state
+    props.changeViewToConfirmation(order)
 }

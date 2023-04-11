@@ -1,12 +1,26 @@
+import products from './products.json'
+
+const prodById = new Map();
+
+for (let prod of products) {
+    prodById.set(prod.id, prod);
+}
+
+function formatDate(date) {
+    return `${date.getMonth()+1}/${date.getDate()}/${date.getFullYear()}`
+}
+
 //Using example found online
-export function Confirmation(props) {
+export function Confirmation({billing, cart, changeViewToBrowse}) {
+    const dateFormatted = formatDate(billing.date);
+    console.log("passed shipping details: ", billing);
     return (
         <div>
-            <button onClick={props.changeViewToBrowse}>Temp button to Browse</button>
             <div class="container mt-5 mb-5">
                 <div class="row d-flex justify-content-center">
                     <div class="col-md-8">
                         <div class="card">
+                                <button class="btn btn-warning" onClick={changeViewToBrowse}>Return to browsing</button>
                             <div class="text-left logo p-2 px-5">
                             </div>
                             <div class="invoice p-5">
@@ -19,7 +33,7 @@ export function Confirmation(props) {
                                                 <td>
                                                     <div class="py-2">
                                                         <span class="d-block text-muted">Order Date</span>
-                                                        <span>12 Jan,2018</span>
+                                                        <span>{dateFormatted}</span>
                                                     </div>
                                                 </td>
                                                 <td>
@@ -30,60 +44,36 @@ export function Confirmation(props) {
                                                 </td>
                                                 <td>
                                                     <div class="py-2">
-                                                        <span class="d-block text-muted">Payment</span>
-                                                        <span><img src="https://img.icons8.com/color/48/000000/mastercard.png" width="20" /></span>
+                                                        <span class="d-block text-muted">Email</span>
+                                                        <span>{billing.email}</span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            
+                                            <tr>
+                                                <td>
+                                                    <div class="py-2">
+                                                        <span class="d-block text-muted">Name on Card</span>
+                                                        <span>{billing.cardName}</span>
                                                     </div>
                                                 </td>
                                                 <td>
                                                     <div class="py-2">
-                                                        <span class="d-block text-muted">Shiping Address</span>
-                                                        <span>414 Advert Avenue, NY,USA</span>
+                                                        <span class="d-block text-muted">Credit Card</span>
+                                                        <span><Card billing={billing} /></span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="py-2">
+                                                        <span class="d-block text-muted">Shipping Address</span>
+                                                        <AddressCard billing={billing} />
                                                     </div>
                                                 </td>
                                             </tr>
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class="product border-bottom table-responsive">
-                                    <table class="table table-borderless">
-                                        <tbody>
-                                            <tr>
-                                                <td width="20%">
-                                                    <img src="https://i.imgur.com/u11K1qd.jpg" width="90" />
-                                                </td>
-                                                <td width="60%">
-                                                    <span class="font-weight-bold">Men's Sports cap</span>
-                                                    <div class="product-qty">
-                                                        <span class="d-block">Quantity:1</span>
-                                                        <span>Color:Dark</span>
-                                                    </div>
-                                                </td>
-                                                <td width="20%">
-                                                    <div class="text-right">
-                                                        <span class="font-weight-bold">$67.50</span>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td width="20%">
-                                                    <img src="https://i.imgur.com/SmBOua9.jpg" width="70" />
-                                                </td>
-                                                <td width="60%">
-                                                    <span class="font-weight-bold">Men's Collar T-shirt</span>
-                                                    <div class="product-qty">
-                                                        <span class="d-block">Quantity:1</span>
-                                                        <span>Color:Orange</span>
-                                                    </div>
-                                                </td>
-                                                <td width="20%">
-                                                    <div class="text-right">
-                                                        <span class="font-weight-bold">$77.50</span>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
+                               <ProductCards cart={cart}/>
                                 <div class="row d-flex justify-content-end">
                                     <div class="col-md-5">
                                         <table class="table table-borderless">
@@ -158,8 +148,7 @@ export function Confirmation(props) {
                                 <p class="font-weight-bold mb-0">Thanks for shopping with us!</p>
                             </div>
                             <div class="d-flex justify-content-between footer p-3">
-                                <span>Need Help? visit our <a href="#"> Help center</a></span>
-                                <span>2023</span>
+                                <span>{new Date().getFullYear()}</span>
 
                             </div>
                         </div>
@@ -168,4 +157,60 @@ export function Confirmation(props) {
             </div>
         </div>
     )
+}
+
+function Card({billing}) {
+
+    return (
+        <>
+         {billing.cardNumber} <br/>
+         Expires: {billing.cardExp} <br />
+        </>
+    )
+}
+
+
+function AddressCard({billing}) {
+    const addr2 = (billing.address2) ? (<>{billing.address2} <br /></>) : (<></>);
+    return (
+        <span>
+        {billing.fullname} <br />
+        {billing.address1} <br />
+        {addr2}
+        {billing.city}, {billing.state} {billing.zip}
+        </span>
+    )
+}
+
+function ProductCards ({cart}) {
+    const cartList = [...cart].map(([prodId, quantity]) => {
+        let prod = prodById.get(prodId);
+
+        return (
+        <tr>
+            <td width="20%">
+                <img src={prod.image} width="90" />
+            </td>
+            <td width="60%">
+                <span class="font-weight-bold">{prod.title}</span>
+                <div class="product-qty">
+                    <span class="d-block">Quantity: {quantity}</span>
+                </div>
+            </td>
+            <td width="20%">
+                <div class="text-right">
+                    <span class="font-weight-bold">${prod.price}</span>
+                </div>
+            </td>
+        </tr>)
+    });
+
+    return (
+    <div class="product border-bottom table-responsive">
+        <table class="table table-borderless">
+            <tbody>
+                {cartList}
+            </tbody>
+        </table>
+    </div>)
 }

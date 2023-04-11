@@ -108,7 +108,7 @@ export function Browse(props) {
                     }).map((product, index) => (
                         <div key={index} class="col">
                             <div class="card">
-                                <img src={product.image} alt={product.image} class="card-img-top" width="370px" height="640px" />
+                                <img src={product.image} alt={product.image} class="card-img-top" />
                                 <div class="card-body">
                                     <h5 class="card-title">{product.title}</h5>
                                     <p class="card-text" >
@@ -118,7 +118,7 @@ export function Browse(props) {
                                         <p class="card-text" >
                                             Price = ${product.price}
                                         </p>
-                                        <Cards product={product} productCount={cart.get(product.id) || 0} addToCart={addToCart} removeFromCart={removeFromCart}/>
+                                        <Buttons product={product} productCount={cart.get(product.id) || 0} addToCart={addToCart} removeFromCart={removeFromCart}/>
                                     </div>
                                 </div>
                             </div>
@@ -132,7 +132,7 @@ export function Browse(props) {
 }
 
 //For the product cards with counters
-function Cards({product, productCount, addToCart, removeFromCart}) {
+function Buttons({product, productCount, addToCart, removeFromCart}) {
     const [counter, setCounter] = useState(productCount);
 
     return (

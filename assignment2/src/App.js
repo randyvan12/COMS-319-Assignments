@@ -8,8 +8,11 @@ function App() {
   //for div swapping
   const [state, setState] = useState('Browse')
   const [cartList, setCartList] = useState([])
+
   const [cart, setCart] = useState(new Map())
   const [totalCost, setTotalCost] = useState(0)
+
+  const [billing, setBilling] = useState({})
 
   return (
     <div>
@@ -18,11 +21,22 @@ function App() {
       )}
 
       {state === 'Checkout' && (
-        <Checkout changeViewToBrowse={() => setState('Browse')} changeViewToConfirmation={() => setState('Confirmation')} cart={cart} />
+        <Checkout changeViewToBrowse={() => setState('Browse')} changeViewToConfirmation={(bill) => {   
+          setBilling({...bill})
+          setState('Confirmation')
+        }} 
+        
+        cart={cart} />
       )}
 
       {state === 'Confirmation' && (
-        <Confirmation changeViewToBrowse={() => setState('Browse')} />
+        <Confirmation changeViewToBrowse={() => {
+          // make a "fresh" view by removing old state and swapping divs
+          setCart(new Map())
+          setBilling({})
+          setState('Browse')
+        }} 
+        billing={billing} cart={cart}/>
       )}
     </div>
   );

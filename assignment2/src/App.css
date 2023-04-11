@@ -87,3 +87,10 @@ icon-shape {
   height: 2rem;
   
 }
+
+.card-img-top {
+  /* max-height: 300px; */
+  width: 100%;
+  height: auto;
+  max-height: 400px;
+}
