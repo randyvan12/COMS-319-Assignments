@@ -12,28 +12,32 @@ for (let prod of products) {
 
 export function Checkout(props) {
     const items = [...props.cart]
-
-    let totalCost = 0;
+    
+    
+    let itemCost = 0;
     let itemCount = 0
     for (let [id, quantity] of items) {
         let price = prodById.get(id).price;
-        totalCost += price * quantity;
+        itemCost += price * quantity;
         itemCount += quantity;
+    }
+    let salesTaxCost = (0.07 * itemCost);
+    let totalCost = itemCost + salesTaxCost;
+
+    // costs formatted, rounded to 2 decimals 
+    let costs = {
+        items: itemCost.toFixed(2),
+        salesTax: salesTaxCost.toFixed(2),
+        total: totalCost.toFixed(2),
     }
 
     return (
         <div>
             <div class="container">
                 <main>
-                <button class="btn btn-warning" onClick={props.changeViewToBrowse}>Continue Browsing</button>
+                <button class="btn btn-warning" onClick={props.changeViewToBrowse}>return</button>
                     <div class="py-5 text-center">
-                        <h2>Checkout form</h2>
-                        <p class="lead">
-                            Below is an example form built entirely with Bootstrap's form
-                            controls. Each required form group has a validation state that can
-                            be triggered by attempting to submit the form without completing
-                            it.
-                        </p>
+                        <h2>Payment form</h2>
                     </div>
 
                     <div class="row g-5">
@@ -46,21 +50,29 @@ export function Checkout(props) {
                                 {/* {cartList} */}
                                 <CartList items={items}/>
                                 <li class="list-group-item d-flex justify-content-between">
+                                    <span>Subtotal</span>
+                                    ${costs.items}
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>Tax</span>
+                                    ${costs.salesTax}
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
                                     <span>Total (USD)</span>
-                                    <strong>${totalCost}</strong>
+                                    <strong>${costs.total}</strong>
                                 </li>
                             </ul>
 
                         </div>
                         <div class="col-md-7 col-lg-8">
                             <h4 class="mb-3">Billing address</h4>
-                            <form class="needs-validation" id="checkout-form" novalidate onSubmit={(e) => {handleSubmit(e, props)}} >
+                            <form noValidate class="needs-validation" id="checkout-form" onSubmit={(e) => {handleSubmit(e, costs, props)}} >
                                 <div class="row g-3">
                                     <div class="col-sm-12">
                                         <label for="fullname" class="form-label">Full Name</label>
                                         <input type="text" class="form-control" id="fullname" placeholder="" required />
                                         <div class="invalid-feedback">
-                                            Valid first name is required.
+                                            Your full name is required.
                                         </div>
                                     </div>
 
@@ -93,7 +105,7 @@ export function Checkout(props) {
                                     <div class="col-md-5">
                                         <label for="city" class="form-label">City</label>
                                         <input type="text" class="form-control" id="city" required />
-                                        <div class="invalid-feedback">Please select a valid country.</div>
+                                        <div class="invalid-feedback">Please enter a city.</div>
                                     </div>
 
                                     <div class="col-md-4">
@@ -104,14 +116,14 @@ export function Checkout(props) {
                                             <option>California</option>
                                         </select>
                                         <div class="invalid-feedback">
-                                            Please provide a valid state.
+                                            Please provide a valid state from the list.
                                         </div>
                                     </div>
 
                                     <div class="col-md-3">
                                         <label for="zip" class="form-label">Zip</label>
-                                        <input type="text" class="form-control" id="zip" placeholder="12345" pattern={"[0-9]+"} required minLength="5" maxLength="5"/>
-                                        <div class="invalid-feedback">Zip code required.</div>
+                                        <input type="text" class="form-control" id="zip" placeholder="12345" pattern={"[0-9]+"}  minLength="5" maxLength="5" required/>
+                                        <div class="invalid-feedback">5-digit zip code required.</div>
                                     </div>
                                 </div>
 
@@ -157,29 +169,29 @@ export function Checkout(props) {
 
                                     <div class="col-md-6">
                                         <label for="cc-number" class="form-label">Credit card number</label>
-                                        <input type="text" class="form-control" id="cc-number" placeholder="" required />
+                                        <input type="text" class="form-control" id="cc-number" placeholder="XXXX-XXXX-XXXX-XXXX" minLength="19" maxLength="19" pattern={"[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}"} onInput={handleCreditCard} required />
                                         <div class="invalid-feedback">
-                                            Credit card number is required
+                                            16 Digit credit card number is required
                                         </div>
                                     </div>
 
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <label for="cc-expiration" class="form-label">Expiration</label>
                                         <input type="date" class="form-control" id="cc-expiration" placeholder="" required />
                                         <div class="invalid-feedback">Expiration date required</div>
                                     </div>
 
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <label for="cc-cvv" class="form-label">CVV</label>
                                         <input type="text" class="form-control" id="cc-cvv" placeholder="" minLength="3" maxLength="3" required />
-                                        <div class="invalid-feedback">Security code required</div>
+                                        <div class="invalid-feedback">3 digit code required</div>
                                     </div>
                                 </div>
 
                                 <hr class="my-4" />
 
                                 <button class="w-100 btn btn-primary btn-lg" type="submit">
-                                    Confirm Order
+                                    order
                                 </button>
                             </form>
                         </div>
@@ -208,40 +220,78 @@ function CartList({items}) {
     return (<>{cartList}</>)
 }
 
-function handleSubmit(event, props) {
-    event.preventDefault();
+// validates and "submits"
+function handleSubmit(event, costs, props) {
+    event.preventDefault()
     let form = event.target;
 
-    let {
-        fullname,
-        email,
-        address1,
-        address2,
-        city,
-        state,
-        zip
-    } = form;
+    console.log('form', form)
+    form.classList.add('was-validated')
+    
+    // html form elements have the checks specified in it
+    // we will simply re-use them
+    if (!form.checkValidity()) {
+        event.stopPropagation()
+    } else {
+        let {
+            fullname,
+            email,
+            address1,
+            address2,
+            city,
+            state,
+            zip
+        } = form;
 
-    let order = {
-        // shipping
-        fullname: fullname.value,
-        email: email.value,
-        address1: address1.value,
-        address2: address2.value,
-        city: city.value,
-        state: state.value,
-        zip: zip.value,
+        let billing = {
+            // shipping
+            fullname: fullname.value,
+            email: email.value,
+            address1: address1.value,
+            address2: address2.value,
+            city: city.value,
+            state: state.value,
+            zip: zip.value,
 
-        // billing
-        cardNumber: form["cc-number"].value,
-        cardName: form["cc-name"].value,
-        cardExp: form["cc-expiration"].value,
-        cardCVV: form["cc-cvv"].value,
+            // billing
+            cardNumber: form["cc-number"].value,
+            cardName: form["cc-name"].value,
+            cardExp: form["cc-expiration"].value,
+            cardCVV: form["cc-cvv"].value,
 
-        // time
-        date: new Date(),
+            // costs
+            costs: costs,
+
+            // time
+            date: new Date(),
+        }
+
+        // call new structure, setting state
+        props.changeViewToConfirmation(billing)
     }
+}
 
-    // call new structure, setting state
-    props.changeViewToConfirmation(order)
+function isNumeric (n) {
+    return !isNaN(parseFloat(n)) && isFinite(n)
+}
+
+function handleCreditCard(event) {
+    let cardInput = event.target;
+
+    if (!cardInput.value) {
+        return event.preventDefault()
+    } else {
+        cardInput.value = cardInput.value.replace(/-/g, '')
+        let newVal = ''
+        for (var i = 0, nums = 0; i < cardInput.value.length; i++) {
+            if (nums !== 0 && nums % 4 === 0) {
+                newVal += '-'
+            }
+            newVal += cardInput.value[i]
+            if (isNumeric(cardInput.value[i])) {
+                nums++
+            }
+        }
+        cardInput.value = newVal
+    }
 }

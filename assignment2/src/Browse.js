@@ -58,15 +58,6 @@ export function Browse(props) {
         setCartTotal(total);
     };
 
-    // const cartItems = cart.map((el) => (
-    //     <li key={el.id} class="list-group-item d-flex justify-content-between lh-sm">
-    //         <img class="img-fluid" src={el.image} width={30} />
-    //         <h6 class="my-0">{el.title}</h6>
-
-    //         <span class="text-body-secondary">${el.price}</span>
-    //     </li>
-    // ));
-
     //search bar
     function Change(event) {
         setInput(event.target.value)
@@ -92,7 +83,7 @@ export function Browse(props) {
                             <input type="search" class="form-control" placeholder="Search..." aria-label="Search" value={input} onChange={Change}></input>
                         </form>
                         <div class="text-end">
-                            <button type="button" class="btn btn-warning" onClick={() => { changeViewToCheckout(); setTotalCost((cartTotal * 0.05) + cartTotal);}}>Checkout</button>
+                            <button type="button" class="btn btn-warning" onClick={() => { changeViewToCheckout(); setTotalCost((cartTotal * 0.05) + cartTotal);}}>checkout</button>
                         </div>
                     </div>
                 </div>

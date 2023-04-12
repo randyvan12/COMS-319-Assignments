@@ -12,7 +12,11 @@ function formatDate(date) {
 
 //Using example found online
 export function Confirmation({billing, cart, changeViewToBrowse}) {
+    console.log("billing:", billing);
+    console.log("date:", billing.date);
     const dateFormatted = formatDate(billing.date);
+    let costs = billing.costs;
+
     console.log("passed shipping details: ", billing);
     return (
         <div>
@@ -86,11 +90,11 @@ export function Confirmation({billing, cart, changeViewToBrowse}) {
                                                     </td>
                                                     <td>
                                                         <div class="text-right">
-                                                            <span>$168.50</span>
+                                                            <span>${costs.items}</span>
                                                         </div>
                                                     </td>
                                                 </tr>
-                                                <tr>
+                                                {/* <tr>
                                                     <td>
                                                         <div class="text-left">
                                                             <span class="text-muted">Shipping Fee</span>
@@ -98,10 +102,10 @@ export function Confirmation({billing, cart, changeViewToBrowse}) {
                                                     </td>
                                                     <td>
                                                         <div class="text-right">
-                                                            <span>$22</span>
+                                                            <span>{billing.costs.salesTax}</span>
                                                         </div>
                                                     </td>
-                                                </tr>
+                                                </tr> */}
                                                 <tr>
                                                     <td>
                                                         <div class="text-left">
@@ -110,11 +114,11 @@ export function Confirmation({billing, cart, changeViewToBrowse}) {
                                                     </td>
                                                     <td>
                                                         <div class="text-right">
-                                                            <span>$7.65</span>
+                                                            <span>${costs.salesTax}</span>
                                                         </div>
                                                     </td>
                                                 </tr>
-                                                <tr>
+                                                {/* <tr>
                                                     <td>
                                                         <div class="text-left">
                                                             <span class="text-muted">Discount</span>
@@ -125,18 +129,18 @@ export function Confirmation({billing, cart, changeViewToBrowse}) {
                                                             <span class="text-success">$168.50</span>
                                                         </div>
                                                     </td>
-                                                </tr>
+                                                </tr> */}
                                                 <tr class="border-top border-bottom">
                                                     <td>
                                                         <div class="text-left">
 
-                                                            <span class="font-weight-bold">Subtotal</span>
+                                                            <span class="font-weight-bold">Total</span>
 
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="text-right">
-                                                            <span class="font-weight-bold">$238.50</span>
+                                                            <span class="font-weight-bold">${costs.total}</span>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -160,10 +164,10 @@ export function Confirmation({billing, cart, changeViewToBrowse}) {
 }
 
 function Card({billing}) {
-
+    let last4CardDigits = billing.cardNumber.slice(-4);
     return (
         <>
-         {billing.cardNumber} <br/>
+         {`XXXX-XXXX-XXXX-${last4CardDigits}`} <br/>
          Expires: {billing.cardExp} <br />
         </>
     )

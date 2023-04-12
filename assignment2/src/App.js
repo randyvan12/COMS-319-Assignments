@@ -7,9 +7,10 @@ import { Confirmation } from './Confirmation';
 function App() {
   //for div swapping
   const [state, setState] = useState('Browse')
-  const [cartList, setCartList] = useState([])
-
   const [cart, setCart] = useState(new Map())
+  
+  
+  const [cartList, setCartList] = useState([])
   const [totalCost, setTotalCost] = useState(0)
 
   const [billing, setBilling] = useState({})
@@ -30,13 +31,15 @@ function App() {
       )}
 
       {state === 'Confirmation' && (
-        <Confirmation changeViewToBrowse={() => {
+        <Confirmation 
+        billing={billing}
+        cart={cart}
+        changeViewToBrowse={() => {
           // make a "fresh" view by removing old state and swapping divs
           setCart(new Map())
           setBilling({})
           setState('Browse')
-        }} 
-        billing={billing} cart={cart}/>
+        }} />
       )}
     </div>
   );
