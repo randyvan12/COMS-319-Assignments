@@ -160,6 +160,7 @@ function Buttons({product, productCount, addToCart, removeFromCart}) {
     const [counter, setCounter] = useState(productCount);
 
     return (
+        
         <div class="input-group w-auto justify-content-end align-items-center d-flex justify-content-center">
             <input type="button" value="-" class="button-minus border rounded-circle  icon-shape icon-sm mx-1 "
                 data-field="quantity" onClick={() => {
@@ -207,8 +208,18 @@ export function Checkout(props) {
     return (
         <div>
             <div class="container">
+              <header class="p-3 mb-3 border-bottom">
+                  <div class="container">
+                      <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+
+                      <button class="btn btn-warning" onClick={props.changeViewToBrowse}>return</button>
+
+
+                      </div>
+                  </div>
+            </header>
                 <main>
-                <button class="btn btn-warning" onClick={props.changeViewToBrowse}>return</button>
+                  
                     <div class="py-5 text-center">
                         <h2>Payment form</h2>
                     </div>
