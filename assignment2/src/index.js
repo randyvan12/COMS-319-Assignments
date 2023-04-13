@@ -51,7 +51,7 @@ function App() {
 // Using bootstrap example
 
 export function Browse(props) {
-    let {changeViewToCheckout, setTotalCost, cart, setCart} = props;
+    let {changeViewToCheckout, cart, setCart} = props;
     //For the list of products
     const [ProductsCategory, setProductsCategory] = useState(products);
 
@@ -109,12 +109,12 @@ export function Browse(props) {
                         </a>
 
                         <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                            <li><a href="#" class="nav-link px-2 link-body-emphasis">All Products</a></li>
-                        </ul>
 
                         <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
                             <input type="search" class="form-control" placeholder="Search..." aria-label="Search" value={input} onChange={Change}></input>
                         </form>
+                        </ul>
+
                         <div class="text-end">
                             <button type="button" class="btn btn-warning" onClick={() => { changeViewToCheckout();}}>checkout</button>
                         </div>
@@ -238,7 +238,7 @@ export function Checkout(props) {
                                     ${costs.items}
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between">
-                                    <span>Tax</span>
+                                    <span>Tax (7%)</span>
                                     ${costs.salesTax}
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between">
