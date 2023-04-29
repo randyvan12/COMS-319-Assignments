@@ -8,6 +8,7 @@ function App() {
   //for the search bar
   const [input, setInput] = useState("");
   const [updatedPrices, setUpdatedPrices] = useState({});
+
   function Change(event) {
     setInput(event.target.value)
   }
@@ -18,7 +19,7 @@ function App() {
       .then(json => setData(json))
       .catch(error => console.error(error));
   };
-  
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -31,9 +32,15 @@ function App() {
       .catch((error) => console.error(error));
   };
 
+  const handleLogoClick = (event) => {
+    event.preventDefault();
+    fetchData();
+    window.location.reload();
+  };
+
   const handlePriceUpdate = async (itemId, updatedPrice) => {
     console.log(`Updated price for item ${itemId}: ${updatedPrice}`);
-  
+
     try {
       const response = await fetch("http://localhost:8081/updatePrice", {
         method: "POST",
@@ -45,20 +52,51 @@ function App() {
           price: parseFloat(updatedPrice),
         }),
       });
-  
+
       if (!response.ok) {
         throw new Error(`Failed to update price: ${response.statusText}`);
       }
-  
+
       const result = await response.json();
       console.log("Price updated successfully:", result);
-  
+
       // Refetch the data and update the state
       fetchData();
     } catch (error) {
       console.error("Error updating price:", error);
     }
   };
+
+  const handleDeleteProduct = async (itemId) => {
+    console.log(`Deleting item ${itemId}`);
+
+    try {
+      const response = await fetch("http://localhost:8081/deleteProduct", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          product1: {
+            id: itemId,
+          },
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to delete product: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      console.log("Product deleted successfully:", result);
+
+      // Refetch the data and update the state
+      fetchData();
+    } catch (error) {
+      console.error("Error deleting product:", error);
+    }
+  };
+
   return (
 
     <div className="App">
@@ -122,29 +160,29 @@ function App() {
                 <h4>About</h4>
                 <p class="text-body-secondary">This is a product page using React, Express, and Mongodb for assignment 3 made by Randy Nguyen and Matthew Duncan.</p>
               </div>
-              <div class="col-sm-4 offset-md-1 py-4">
+              {/* <div class="col-sm-4 offset-md-1 py-4">
                 <h4>Contact</h4>
                 <ul class="list-unstyled">
                   <li><a href="#" class="text-white">Follow on Twitter</a></li>
                   <li><a href="#" class="text-white">Like on Facebook</a></li>
                   <li><a href="#" class="text-white">Email me</a></li>
                 </ul>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
         <div class="navbar navbar-dark bg-dark shadow-sm">
           <div class="container">
-            <a href="#" class="navbar-brand d-flex align-items-center">
+            <a href="#" class="navbar-brand d-flex align-items-center" onClick={handleLogoClick}>
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
                 stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true" class="me-2"
                 viewBox="0 0 24 24">
                 <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
                 <circle cx="12" cy="13" r="4" />
               </svg>
-              <strong>Album</strong>
+              <strong>Fake Store</strong>
             </a>
-            <form onSubmit={handleSearch}>
+            <form class="navbar-brand d-flex align-items-center" onSubmit={handleSearch}>
               <input
                 type="search"
                 class="form-control"
@@ -167,7 +205,7 @@ function App() {
 
       <main>
 
-        <section class="py-5 text-center container">
+        {/* <section class="py-5 text-center container">
           <div class="row py-lg-5">
             <div class="col-lg-6 col-md-8 mx-auto">
               <h1 class="fw-light">Album example</h1>
@@ -179,7 +217,7 @@ function App() {
               </p>
             </div>
           </div>
-        </section>
+        </section> */}
 
         <div class="album py-5 bg-body-tertiary">
           <div class="container">
@@ -218,6 +256,7 @@ function App() {
                                 placeholder="Update price"
                               />
                               <button onClick={() => handlePriceUpdate(item.id, updatedPrices[item.id])}> Update </button>
+                              <button className="btn btn-danger mt-2" onClick={() => handleDeleteProduct(item.id)}>Delete</button>
                             </div>
 
                           </div>
@@ -225,8 +264,8 @@ function App() {
                       </div>
                     ));
                   })
-                  : // If there are no search results and the data is not available, display "Loading..."
-                  "Loading..."}
+                  : // If there are no search results and the data is not available
+                  "no search results and the data is not available"}
             </div>
           </div>
         </div>

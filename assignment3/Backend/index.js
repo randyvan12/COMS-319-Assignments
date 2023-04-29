@@ -93,20 +93,24 @@ app.post("/updatePrice", async (req, res) => {
 
   let foundProductKey;
   let foundDoc;
+  let foundProductIndex;
 
   for (const doc of docs) {
     const productKeys = Object.keys(doc).filter((key) => productKeyPattern.test(key));
     console.log('ProductKeys:', productKeys); // Added log
-  
+
     for (const productKey of productKeys) {
-      if (doc[productKey].id === id) {
+      const productIndex = doc[productKey].findIndex((product) => product.id === id);
+      
+      if (productIndex !== -1) {
         foundProductKey = productKey;
         foundDoc = doc;
+        foundProductIndex = productIndex;
         break;
       }
     }
-  
-    if (foundProductKey && foundDoc) {
+
+    if (foundProductKey && foundDoc && foundProductIndex !== undefined) {
       break;
     }
   }
@@ -122,7 +126,7 @@ app.post("/updatePrice", async (req, res) => {
   const query = { _id: foundDoc._id };
   const update = {
     $set: {
-      [`${foundProductKey}.price`]: price,
+      [`${foundProductKey}.${foundProductIndex}.price`]: price,
     },
   };
   const options = { returnOriginal: false };
