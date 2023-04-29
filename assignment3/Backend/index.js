@@ -74,3 +74,70 @@ app.delete("/deleteProduct", async (req, res) => {
   res.status(200);
   res.send(results);
 });
+
+app.post("/updatePrice", async (req, res) => {
+  const { id, price } = req.body;
+
+  if (!id || !price) {
+    res.status(400).send("Missing required fields: id and/or price");
+    return;
+  }
+
+  await client.connect();
+  console.log("Node connected successfully to updatePrice MongoDB");
+
+  const productKeyPattern = /^product\d+$/;
+
+  const docs = await db.collection("fakestore_catalog").find({}).toArray();
+  console.log('Docs:', docs); // Added log
+
+  let foundProductKey;
+  let foundDoc;
+
+  for (const doc of docs) {
+    const productKeys = Object.keys(doc).filter((key) => productKeyPattern.test(key));
+    console.log('ProductKeys:', productKeys); // Added log
+  
+    for (const productKey of productKeys) {
+      if (doc[productKey].id === id) {
+        foundProductKey = productKey;
+        foundDoc = doc;
+        break;
+      }
+    }
+  
+    if (foundProductKey && foundDoc) {
+      break;
+    }
+  }
+
+  console.log('FoundProductKey:', foundProductKey); // Added log
+  console.log('FoundDoc:', foundDoc); // Added log
+
+  if (!foundProductKey || !foundDoc) {
+    res.status(404).send("Item not found");
+    return;
+  }
+
+  const query = { _id: foundDoc._id };
+  const update = {
+    $set: {
+      [`${foundProductKey}.price`]: price,
+    },
+  };
+  const options = { returnOriginal: false };
+
+  try {
+    const result = await db.collection("fakestore_catalog").findOneAndUpdate(query, update, options);
+
+    if (!result.value) {
+      res.status(404).send("Item not found");
+      return;
+    }
+
+    res.status(200).send(result.value);
+  } catch (error) {
+    console.error("Error updating price:", error);
+    res.status(500).send("Internal server error");
+  }
+});

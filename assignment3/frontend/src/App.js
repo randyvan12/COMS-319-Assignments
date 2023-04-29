@@ -3,19 +3,68 @@ import React, { useState, useEffect } from 'react';
 
 function App() {
   const [data, setData] = useState(null);
+  const [searchResults, setSearchResults] = useState(null);
 
-  useEffect(() => {
+  //for the search bar
+  const [input, setInput] = useState("");
+  const [updatedPrices, setUpdatedPrices] = useState({});
+  function Change(event) {
+    setInput(event.target.value)
+  }
+
+  const fetchData = async () => {
     fetch('http://localhost:8081/listProducts')
       .then(response => response.json())
       .then(json => setData(json))
       .catch(error => console.error(error));
+  };
+  
+  useEffect(() => {
+    fetchData();
   }, []);
+
+  const handleSearch = (event) => {
+    event.preventDefault();
+    fetch(`http://localhost:8081/${input}`)
+      .then((response) => response.json())
+      .then((json) => setSearchResults(json))
+      .catch((error) => console.error(error));
+  };
+
+  const handlePriceUpdate = async (itemId, updatedPrice) => {
+    console.log(`Updated price for item ${itemId}: ${updatedPrice}`);
+  
+    try {
+      const response = await fetch("http://localhost:8081/updatePrice", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: itemId,
+          price: parseFloat(updatedPrice),
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Failed to update price: ${response.statusText}`);
+      }
+  
+      const result = await response.json();
+      console.log("Price updated successfully:", result);
+  
+      // Refetch the data and update the state
+      fetchData();
+    } catch (error) {
+      console.error("Error updating price:", error);
+    }
+  };
   return (
 
     <div className="App">
-      <div>
+      {/* <div>
         {data ? <pre>{JSON.stringify(data, null, 2)}</pre> : 'Loading...'}
-      </div>
+      </div> */}
       <div class="dropdown position-fixed bottom-0 end-0 mb-3 me-3 bd-mode-toggle">
         <button class="btn btn-bd-primary py-2 dropdown-toggle d-flex align-items-center" id="bd-theme" type="button"
           aria-expanded="false" data-bs-toggle="dropdown" aria-label="Toggle theme (auto)">
@@ -71,9 +120,7 @@ function App() {
             <div class="row">
               <div class="col-sm-8 col-md-7 py-4">
                 <h4>About</h4>
-                <p class="text-body-secondary">Add some information about the album below, the author, or any other
-                  background context. Make it a few sentences long so folks can pick up some informative tidbits. Then, link
-                  them off to some social networking sites or contact information.</p>
+                <p class="text-body-secondary">This is a product page using React, Express, and Mongodb for assignment 3 made by Randy Nguyen and Matthew Duncan.</p>
               </div>
               <div class="col-sm-4 offset-md-1 py-4">
                 <h4>Contact</h4>
@@ -97,6 +144,19 @@ function App() {
               </svg>
               <strong>Album</strong>
             </a>
+            <form onSubmit={handleSearch}>
+              <input
+                type="search"
+                class="form-control"
+                placeholder="Search..."
+                aria-label="Search"
+                value={input}
+                onChange={(event) => setInput(event.target.value)}
+              />
+              <button type="submit" class="btn btn-primary">
+                Search
+              </button>
+            </form>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarHeader"
               aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
@@ -112,7 +172,7 @@ function App() {
             <div class="col-lg-6 col-md-8 mx-auto">
               <h1 class="fw-light">Album example</h1>
               <p class="lead text-body-secondary">Something short and leading about the collection below—its contents, the
-                creator, etc. Make it short and sweet, but not too short so folks don’t simply skip over it entirely.</p>
+                creator, etc. Make it short and sweet, but not too short so folks don't simply skip over it entirely.</p>
               <p>
                 <a href="#" class="btn btn-primary my-2">Main call to action</a>
                 <a href="#" class="btn btn-secondary my-2">Secondary action</a>
@@ -123,199 +183,50 @@ function App() {
 
         <div class="album py-5 bg-body-tertiary">
           <div class="container">
-
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-              <div class="col">
-                <div class="card shadow-sm">
-                  <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg"
-                    role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
-                    <title>Placeholder</title>
-                    <rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef"
-                      dy=".3em">Thumbnail</text>
-                  </svg>
-                  <div class="card-body">
-                    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional
-                      content. This content is a little bit longer.</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                      <div class="btn-group">
-                        <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                      </div>
-                      <small class="text-body-secondary">9 mins</small>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col">
-                <div class="card shadow-sm">
-                  <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg"
-                    role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
-                    <title>Placeholder</title>
-                    <rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef"
-                      dy=".3em">Thumbnail</text>
-                  </svg>
-                  <div class="card-body">
-                    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional
-                      content. This content is a little bit longer.</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                      <div class="btn-group">
-                        <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                      </div>
-                      <small class="text-body-secondary">9 mins</small>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col">
-                <div class="card shadow-sm">
-                  <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg"
-                    role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
-                    <title>Placeholder</title>
-                    <rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef"
-                      dy=".3em">Thumbnail</text>
-                  </svg>
-                  <div class="card-body">
-                    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional
-                      content. This content is a little bit longer.</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                      <div class="btn-group">
-                        <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                      </div>
-                      <small class="text-body-secondary">9 mins</small>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              {
+                // Check if there are search results or if the data is available
+                (searchResults ? [searchResults] : data)
+                  ? // If there are search results, wrap them in an array, otherwise use the data
+                  (searchResults ? [searchResults] : data).map((productGroup) => {
+                    // Find the key in the product group that starts with "product"
+                    const productKey = Object.keys(productGroup).find((key) =>
+                      key.startsWith("product")
+                    );
+                    // Extract the products from the product group using the product key
+                    const products = productGroup[productKey];
 
-              <div class="col">
-                <div class="card shadow-sm">
-                  <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg"
-                    role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
-                    <title>Placeholder</title>
-                    <rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef"
-                      dy=".3em">Thumbnail</text>
-                  </svg>
-                  <div class="card-body">
-                    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional
-                      content. This content is a little bit longer.</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                      <div class="btn-group">
-                        <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                      </div>
-                      <small class="text-body-secondary">9 mins</small>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col">
-                <div class="card shadow-sm">
-                  <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg"
-                    role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
-                    <title>Placeholder</title>
-                    <rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef"
-                      dy=".3em">Thumbnail</text>
-                  </svg>
-                  <div class="card-body">
-                    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional
-                      content. This content is a little bit longer.</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                      <div class="btn-group">
-                        <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                      </div>
-                      <small class="text-body-secondary">9 mins</small>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col">
-                <div class="card shadow-sm">
-                  <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg"
-                    role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
-                    <title>Placeholder</title>
-                    <rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef"
-                      dy=".3em">Thumbnail</text>
-                  </svg>
-                  <div class="card-body">
-                    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional
-                      content. This content is a little bit longer.</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                      <div class="btn-group">
-                        <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                      </div>
-                      <small class="text-body-secondary">9 mins</small>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                    // Render each product in the products array
+                    return products.map((item) => (
+                      <div key={item.id} class="col">
+                        <div class="card shadow-sm">
+                          <img src={item.image} className="bd-placeholder-img card-img-top" alt={item.title} />
+                          <div class="card-body">
+                            <h5 class="card-title">{item.title}</h5>
+                            <p class="card-text">{item.description}</p>
+                            <p class="card-text">${item.price}</p>
+                            <p class="card-text">Category: {item.category}</p>
+                            <p class="card-text">{item.rating.rate} out of {item.rating.count} reviews</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                              <input type="number" value={updatedPrices[item.id] || ''}
+                                onChange={(e) =>
+                                  setUpdatedPrices({
+                                    ...updatedPrices,
+                                    [item.id]: e.target.value,
+                                  })
+                                }
+                                placeholder="Update price"
+                              />
+                              <button onClick={() => handlePriceUpdate(item.id, updatedPrices[item.id])}> Update </button>
+                            </div>
 
-              <div class="col">
-                <div class="card shadow-sm">
-                  <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg"
-                    role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
-                    <title>Placeholder</title>
-                    <rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef"
-                      dy=".3em">Thumbnail</text>
-                  </svg>
-                  <div class="card-body">
-                    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional
-                      content. This content is a little bit longer.</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                      <div class="btn-group">
-                        <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                          </div>
+                        </div>
                       </div>
-                      <small class="text-body-secondary">9 mins</small>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col">
-                <div class="card shadow-sm">
-                  <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg"
-                    role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
-                    <title>Placeholder</title>
-                    <rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef"
-                      dy=".3em">Thumbnail</text>
-                  </svg>
-                  <div class="card-body">
-                    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional
-                      content. This content is a little bit longer.</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                      <div class="btn-group">
-                        <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                      </div>
-                      <small class="text-body-secondary">9 mins</small>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col">
-                <div class="card shadow-sm">
-                  <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg"
-                    role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
-                    <title>Placeholder</title>
-                    <rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef"
-                      dy=".3em">Thumbnail</text>
-                  </svg>
-                  <div class="card-body">
-                    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional
-                      content. This content is a little bit longer.</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                      <div class="btn-group">
-                        <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                      </div>
-                      <small class="text-body-secondary">9 mins</small>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                    ));
+                  })
+                  : // If there are no search results and the data is not available, display "Loading..."
+                  "Loading..."}
             </div>
           </div>
         </div>
