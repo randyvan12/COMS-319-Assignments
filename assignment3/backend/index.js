@@ -7,6 +7,7 @@ const { MongoClient } = require("mongodb");
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.static("images"));
 
 const port = "8081";
 const host = "localhost";
@@ -22,7 +23,7 @@ app.listen(port, () => {
 });
 
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.send("Hello, World!");
 });
 
 app.get("/listProducts", async (req, res) => {

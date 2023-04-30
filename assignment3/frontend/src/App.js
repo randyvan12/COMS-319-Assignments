@@ -1,7 +1,11 @@
 import './App.css';
 import React, { useState, useEffect } from 'react';
 
+
+
 function App() {
+  const [view, setView] = useState('read');
+
   const [data, setData] = useState(null);
   const [searchResults, setSearchResults] = useState(null);
 
@@ -9,16 +13,17 @@ function App() {
   const [input, setInput] = useState("");
   const [updatedPrices, setUpdatedPrices] = useState({});
 
-  function Change(event) {
-    setInput(event.target.value)
-  }
-
+  // function Change(event) {
+  //   setInput(event.target.value)
+  // }
+  
   const fetchData = async () => {
     fetch('http://localhost:8081/listProducts')
       .then(response => response.json())
       .then(json => setData(json))
       .catch(error => console.error(error));
   };
+  
 
   useEffect(() => {
     fetchData();
@@ -38,121 +43,70 @@ function App() {
     window.location.reload();
   };
 
-  const handlePriceUpdate = async (itemId, updatedPrice) => {
-    console.log(`Updated price for item ${itemId}: ${updatedPrice}`);
+  // const handlePriceUpdate = async (itemId, updatedPrice) => {
+  //   console.log(`Updated price for item ${itemId}: ${updatedPrice}`);
 
-    try {
-      const response = await fetch("http://localhost:8081/updatePrice", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: itemId,
-          price: parseFloat(updatedPrice),
-        }),
-      });
+  //   try {
+  //     const response = await fetch("http://localhost:8081/updatePrice", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         id: itemId,
+  //         price: parseFloat(updatedPrice),
+  //       }),
+  //     });
 
-      if (!response.ok) {
-        throw new Error(`Failed to update price: ${response.statusText}`);
-      }
+  //     if (!response.ok) {
+  //       throw new Error(`Failed to update price: ${response.statusText}`);
+  //     }
 
-      const result = await response.json();
-      console.log("Price updated successfully:", result);
+  //     const result = await response.json();
+  //     console.log("Price updated successfully:", result);
 
-      // Refetch the data and update the state
-      fetchData();
-    } catch (error) {
-      console.error("Error updating price:", error);
-    }
-  };
+  //     // Refetch the data and update the state
+  //     fetchData();
+  //   } catch (error) {
+  //     console.error("Error updating price:", error);
+  //   }
+  // };
 
-  const handleDeleteProduct = async (itemId) => {
-    console.log(`Deleting item ${itemId}`);
+  // const handleDeleteProduct = async (itemId) => {
+  //   console.log(`Deleting item ${itemId}`);
 
-    try {
-      const response = await fetch("http://localhost:8081/deleteProduct", {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          product1: {
-            id: itemId,
-          },
-        }),
-      });
+  //   try {
+  //     const response = await fetch("http://localhost:8081/deleteProduct", {
+  //       method: "DELETE",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         product1: {
+  //           id: itemId,
+  //         },
+  //       }),
+  //     });
 
-      if (!response.ok) {
-        throw new Error(`Failed to delete product: ${response.statusText}`);
-      }
+  //     if (!response.ok) {
+  //       throw new Error(`Failed to delete product: ${response.statusText}`);
+  //     }
 
-      const result = await response.json();
-      console.log("Product deleted successfully:", result);
+  //     const result = await response.json();
+  //     console.log("Product deleted successfully:", result);
 
-      // Refetch the data and update the state
-      fetchData();
-    } catch (error) {
-      console.error("Error deleting product:", error);
-    }
-  };
+  //     // Refetch the data and update the state
+  //     fetchData();
+  //   } catch (error) {
+  //     console.error("Error deleting product:", error);
+  //   }
+  // };
+
+  
 
   return (
-
     <div className="App">
-      {/* <div>
-        {data ? <pre>{JSON.stringify(data, null, 2)}</pre> : 'Loading...'}
-      </div> */}
-      <div class="dropdown position-fixed bottom-0 end-0 mb-3 me-3 bd-mode-toggle">
-        <button class="btn btn-bd-primary py-2 dropdown-toggle d-flex align-items-center" id="bd-theme" type="button"
-          aria-expanded="false" data-bs-toggle="dropdown" aria-label="Toggle theme (auto)">
-          <svg class="bi my-1 theme-icon-active" width="1em" height="1em">
-            <use href="#circle-half"></use>
-          </svg>
-          <span class="visually-hidden" id="bd-theme-text">Toggle theme</span>
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="bd-theme-text">
-          <li>
-            <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light"
-              aria-pressed="false">
-              <svg class="bi me-2 opacity-50 theme-icon" width="1em" height="1em">
-                <use href="#sun-fill"></use>
-              </svg>
-              Light
-              <svg class="bi ms-auto d-none" width="1em" height="1em">
-                <use href="#check2"></use>
-              </svg>
-            </button>
-          </li>
-          <li>
-            <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark"
-              aria-pressed="false">
-              <svg class="bi me-2 opacity-50 theme-icon" width="1em" height="1em">
-                <use href="#moon-stars-fill"></use>
-              </svg>
-              Dark
-              <svg class="bi ms-auto d-none" width="1em" height="1em">
-                <use href="#check2"></use>
-              </svg>
-            </button>
-          </li>
-          <li>
-            <button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="auto"
-              aria-pressed="true">
-              <svg class="bi me-2 opacity-50 theme-icon" width="1em" height="1em">
-                <use href="#circle-half"></use>
-              </svg>
-              Auto
-              <svg class="bi ms-auto d-none" width="1em" height="1em">
-                <use href="#check2"></use>
-              </svg>
-            </button>
-          </li>
-        </ul>
-      </div>
-
-
-      <header data-bs-theme="dark">
+     <header data-bs-theme="dark">
         <div class="collapse text-bg-dark" id="navbarHeader">
           <div class="container">
             <div class="row">
@@ -160,18 +114,10 @@ function App() {
                 <h4>About</h4>
                 <p class="text-body-secondary">This is a product page using React, Express, and Mongodb for assignment 3 made by Randy Nguyen and Matthew Duncan.</p>
               </div>
-              {/* <div class="col-sm-4 offset-md-1 py-4">
-                <h4>Contact</h4>
-                <ul class="list-unstyled">
-                  <li><a href="#" class="text-white">Follow on Twitter</a></li>
-                  <li><a href="#" class="text-white">Like on Facebook</a></li>
-                  <li><a href="#" class="text-white">Email me</a></li>
-                </ul>
-              </div> */}
             </div>
           </div>
         </div>
-        <div class="navbar navbar-dark bg-dark shadow-sm">
+        <div class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
           <div class="container">
             <a href="#" class="navbar-brand d-flex align-items-center" onClick={handleLogoClick}>
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
@@ -182,6 +128,26 @@ function App() {
               </svg>
               <strong>Fake Store</strong>
             </a>
+
+            {/* <div class="collapse navbar-collapse" id="navbarNav"> */}
+              <ul class="navbar-nav">
+                <li class="nav-item">
+                  <button class={(view==="create" ? "active" : "") + " nav-link"} onClick={() => {setView("create")}}>Create</button>
+                </li>
+                <li class="nav-item">
+                  <button class={(view==="read" ? "active" : "") + " nav-link"} onClick={() => {setView("read")}}>Read</button>
+                </li>
+                <li class="nav-item">
+                  <button class={(view==="update" ? "active" : "") + " nav-link"} onClick={() => {setView("update")}}>Update</button>
+                </li>
+                <li class="nav-item">
+                  <button class={(view==="delete" ? "active" : "") + " nav-link"} onClick={() => {setView("delete")}}>Delete</button>
+                </li>
+                <li class="nav-item">
+                  <button class={(view==="credits" ? "active" : "") + " nav-link"} onClick={() => {setView("credits")}}>Credits</button>
+                </li>
+              </ul>
+            
             <form class="navbar-brand d-flex align-items-center" onSubmit={handleSearch}>
               <input
                 type="search"
@@ -202,77 +168,96 @@ function App() {
           </div>
         </div>
       </header>
+        {view ==="create" && <CreateView />}
+        {view ==="read" && <ReadView data={data} />}
+        {view ==="update" && <UpdateView />}
+        {view ==="delete" && <DeleteView />}
+        {view ==="credits" && <CreditsView />}
+    </div>
+  );
+}
 
-      <main>
+function CreateView() {
+  return (
+    <main>
+      create view
+    </main>
+  )
+}
 
-        {/* <section class="py-5 text-center container">
-          <div class="row py-lg-5">
-            <div class="col-lg-6 col-md-8 mx-auto">
-              <h1 class="fw-light">Album example</h1>
-              <p class="lead text-body-secondary">Something short and leading about the collection below—its contents, the
-                creator, etc. Make it short and sweet, but not too short so folks don't simply skip over it entirely.</p>
-              <p>
-                <a href="#" class="btn btn-primary my-2">Main call to action</a>
-                <a href="#" class="btn btn-secondary my-2">Secondary action</a>
-              </p>
-            </div>
-          </div>
-        </section> */}
-
-        <div class="album py-5 bg-body-tertiary">
+function ReadView(params) {
+  const data = params.data || []
+  
+  return (data) ? (
+    <main>
+      
+      <div class="album py-5 bg-body-tertiary">
           <div class="container">
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
               {
-                // Check if there are search results or if the data is available
-                (searchResults ? [searchResults] : data)
-                  ? // If there are search results, wrap them in an array, otherwise use the data
-                  (searchResults ? [searchResults] : data).map((productGroup) => {
-                    // Find the key in the product group that starts with "product"
-                    const productKey = Object.keys(productGroup).find((key) =>
-                      key.startsWith("product")
-                    );
-                    // Extract the products from the product group using the product key
-                    const products = productGroup[productKey];
+                 data.map((productGroup) => {
+                  // Find the key in the product group that starts with "product"
+                  const productKey = Object.keys(productGroup).find((key) =>
+                    key.startsWith("product")
+                  );
+                  // Extract the products from the product group using the product key
+                  const products = productGroup[productKey];
 
-                    // Render each product in the products array
-                    return products.map((item) => (
-                      <div key={item.id} class="col">
-                        <div class="card shadow-sm">
-                          <img src={item.image} className="bd-placeholder-img card-img-top" alt={item.title} />
-                          <div class="card-body">
-                            <h5 class="card-title">{item.title}</h5>
-                            <p class="card-text">{item.description}</p>
-                            <p class="card-text">${item.price}</p>
-                            <p class="card-text">Category: {item.category}</p>
-                            <p class="card-text">{item.rating.rate} out of {item.rating.count} reviews</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                              <input type="number" value={updatedPrices[item.id] || ''}
-                                onChange={(e) =>
-                                  setUpdatedPrices({
-                                    ...updatedPrices,
-                                    [item.id]: e.target.value,
-                                  })
-                                }
-                                placeholder="Update price"
-                              />
-                              <button onClick={() => handlePriceUpdate(item.id, updatedPrices[item.id])}> Update </button>
-                              <button className="btn btn-danger mt-2" onClick={() => handleDeleteProduct(item.id)}>Delete</button>
-                            </div>
-
-                          </div>
-                        </div>
-                      </div>
-                    ));
-                  })
-                  : // If there are no search results and the data is not available
-                  "no search results and the data is not available"}
+                  // Render each product in the products array
+                  return products.map(item => <ItemCard item={item} /> );
+                })
+                  }
             </div>
           </div>
         </div>
 
-      </main>
-    </div>
+    </main>
+  )
+  :
+  <main>unable to load</main>
+}
+
+function UpdateView() {
+  return (
+    <main>
+      update view
+    </main>
+  )
+}
+
+function DeleteView() {
+  return (
+    <main>
+      delete view
+    </main>
+  )
+}
+
+function CreditsView() {
+  return (
+    <main>
+      <p>This is a product page using the MERN stack (React, Express, and Mongodb). It was created for Assignment 3 of COM S 319, taught by Abraham Aldaco, Ph.D.
+        This application was created by students Randy Nguyen and Matthew Duncan.</p>
+      <p>April 30, 2023</p>
+    </main>
   );
+}
+
+function ItemCard({item}) {
+  return (
+  <div key={item.id} class="col">
+    <div class="card shadow-sm">
+      <img src={item.image} className="bd-placeholder-img card-img-top" alt={item.title} />
+      <div class="card-body">
+        <h5 class="card-title">{item.title}</h5>
+        <p class="card-text">{item.description}</p>
+        <p class="card-text">${item.price}</p>
+        <p class="card-text">Category: {item.category}</p>
+        <p class="card-text">{item.rating.rate} out of {item.rating.count} reviews</p>
+
+      </div>
+    </div>
+  </div> )
 }
 
 export default App;
