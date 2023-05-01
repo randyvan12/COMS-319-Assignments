@@ -3,7 +3,7 @@ var cors = require("cors");
 var app = express();
 var fs = require("fs");
 var bodyParser = require("body-parser");
-const { MongoClient, ObjectId } = require("mongodb");
+const { MongoClient } = require("mongodb");
 
 
 app.use(cors());
@@ -28,7 +28,9 @@ app.get("/", (req, res) => {
 });
 
 // READ ALL
-app.get("/products/", async (req, res) => {
+app.get("/products/", getAllProducts);
+
+async function getAllProducts(req, res) {
   await client.connect();
   console.log("Node connected successfully to GET MongoDB");
 
@@ -42,7 +44,7 @@ app.get("/products/", async (req, res) => {
   console.log(results);
   res.status(200);
   res.send(results);
-});
+};
 
 // READ
 app.get("/products/:id", async (req, res) => {
@@ -59,19 +61,40 @@ app.get("/products/:id", async (req, res) => {
   else res.send(results).status(200);
 });
 
-// // CREATE
-// app.post("/products/:id", async (req, res) => {
-//   await client.connect();
-//   const keys = Object.keys(req.body);
-//   const values = Objects.values(req.body);
-//   const k = keys[0];
-//   const v = values[0];
-//   console.log("Keys :", k, " Values", v);
-//   const newDocument = { _id: "4", [k]: [v] };
-//   const results = await db.collection("fakestore_catalog").insertOne(newDocument);
-//   res.status(200);
-//   res.send(results);
-// });
+// CREATE
+app.post("/products/", async (req, res) => {
+  console.log("REACHED,", req.body);
+  
+  
+  if (isNaN(req.body._id)) {
+    res.sendStatus(400);
+    return;
+  }
+
+  try {
+    price = Number(req.body.price);
+    rate = Number(req.body.rating.rate);
+    count = Number(req.body.rating.count);
+
+    const newDocument = {
+      price,
+      rating: {rate, count},
+      ...req.body};
+
+    await client.connect();
+    newDocument.price = Number(price);
+    newDocument.rating.rate = Number(newDocument.rating.rate);
+    newDocument.rating.count = Number(newDocument.rating.count);
+    db.collection("fakestore_catalog").insertOne
+    const results = await db.collection("fakestore_catalog").insertOne(newDocument);
+    res.status(200)
+    res.send(results)
+  } catch (e) {
+    console.error("Failed to create new product:", e);
+    res.sendStatus(500);
+    return;
+  }
+});
 
 // DELETE
 app.delete("/products/:id", async (req, res) => {

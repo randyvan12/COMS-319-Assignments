@@ -8,11 +8,6 @@ function App() {
   const [view, setView] = useState('read');
 
   const [data, setData] = useState(null);
-  const [searchResults, setSearchResults] = useState(null);
-
-  //for the search bar
-  const [input, setInput] = useState("");
-  const [updatedPrices, setUpdatedPrices] = useState({});
   
   const fetchData = async () => {
     fetch(`http://${SERVER_ADDR}/products`)
@@ -90,9 +85,98 @@ function App() {
 /* Views made from functional components */
 
 function CreateView() {
+  const submissionForm = useRef(null);
+  
+  const handleCreation = async (e, form) => {
+    e.preventDefault();
+
+    let newProd = {
+      _id: form.querySelector("#id").value,
+      title: form.querySelector("#title").value,
+      price: Number(form.querySelector("#price").value),
+      description: form.querySelector("#description").value,
+      category: form.querySelector("#category").value,
+      image: form.querySelector("#image").value,
+      rating: {
+        rate: Number(form.querySelector("#rate").value),
+        count: Number(form.querySelector("#count").value)
+      }
+    };
+
+    console.log("Attempting to send product information:", newProd);
+
+    try {
+      const response = await fetch(`http://${SERVER_ADDR}/products/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newProd),
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+
   return (
     <main>
-      create view
+      <form ref={submissionForm} className="w-50 p-3 mx-auto" onSubmit={(e) => {handleCreation(e, submissionForm.current)}}>
+        <div className="row g-4">
+          <div className="col-md-5">
+            <label for="id">Id</label>
+            <input type="number" className="form-control" id="id" placeholder="_id" min="0"></input>
+          </div>
+          <div className="col-md-5">
+            <label for="title">Title</label>
+            <input type="text" className="form-control" id="title" placeholder="Shrit"></input>
+          </div>
+        </div>
+
+        <div className="row g-4">
+          <div className="form-group col-md-5">
+            <label for="price">Price</label>
+            <input type="number" className="form-control" id="price" placeholder="20.00" min="0" step="0.01"></input>
+          </div>
+          <div className="form-group col-md-5">
+            <label for="category">Category</label>
+            <input type="text" className="form-control" id="category" placeholder="Clothing"></input>
+          </div>
+        </div>
+
+        <div className="row g-4">
+          <div className="form-group col-md-5">
+            <label for="rate">Rating</label>
+            <input type="text" className="form-control" id="rate"></input>
+          </div>
+          <div className="form-group col-md-5">
+            <label for="count">Rating count</label>
+            <input type="text" className="form-control" id="count"></input>
+          </div>
+        </div>
+
+        <div className="row g-4">
+          <div className="form-group col-md-10">
+            <label for="description">Description</label>
+            <textarea type="textarea" className="form-control" id="description" rows="5"></textarea>
+          </div>
+        </div>
+
+        <div className="row g-4">
+          <div className="form-group col-md-5">
+            <label for="image">Image</label>
+            <input type="text" className="form-control" id="image"></input>
+          </div>
+        </div>
+        <div className="row g-4">
+         <div className="form-group col-md-10">
+         <hr class="my-4" />
+            <button type="submit" className="btn btn-primary">Sign in</button>
+          </div>
+        </div>
+
+
+      </form>
     </main>
   )
 }
@@ -102,7 +186,6 @@ function ReadView(params) {
   
   return (data) ? (
     <main>
-      
       <div class="album py-5 bg-body-tertiary">
           <div class="container">
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
@@ -222,7 +305,6 @@ function DeleteView() {
 
 
  const [item, setItem] = useState(null);
- const priceInput = useRef(null);
 
  console.log("item:", item)
  

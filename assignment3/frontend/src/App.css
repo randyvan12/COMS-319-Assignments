@@ -71,10 +71,10 @@
   z-index: 1500;
 }
 
-.centered-cont {
+/* .centered-cont {
   display: flex;
   align-items: center;
-}
+} */
 
 .card-img-top {
   max-width: 200px;
