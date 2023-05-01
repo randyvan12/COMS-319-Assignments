@@ -213,7 +213,7 @@ function UpdateView() {
 
       try {
         const response = await fetch(`http://${SERVER_ADDR}/products/${item._id}`, {
-          method: "POST",
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
@@ -368,14 +368,18 @@ function ItemSearch({callback}) {
   const field = useRef(null);
 
   return (
-    <form className="navbar-brand d-flex align-items-center" style={{width: "220px", }} onSubmit={(e) => handleSubmit(e, field.current, callback)}>
+    <form className="w-50 p-3 mx-auto" style={{width: "220px", }} onSubmit={(e) => handleSubmit(e, field.current, callback)}>
     <input
-      type="search"
+      type="number"
+      defaultValue={1}
+      defaultChecked="true"
       className="form-control"
       id="id-input"
       ref={field}
       placeholder="Id"
       aria-label="Search"
+      min="0"
+      validate
     />
     <button type="submit" class="btn btn-primary">
       Search by ID
