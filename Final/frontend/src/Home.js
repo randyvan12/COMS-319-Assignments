@@ -42,7 +42,7 @@ export function Home(props) {
                             >
                                 <div id="temperature">
                                     <h1>🌡</h1>
-                                    <h1>{props.temperature}</h1>
+                                    <h1>{props.temperaturef} / {props.temperaturec}</h1>
                                 </div>
                             </div>
                         </div>

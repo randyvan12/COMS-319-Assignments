@@ -28,8 +28,8 @@ function App() {
     fetch('./data.json')
       .then((response) => response.json())
       .then((data) => {
-        setTemperatureF(`${data.temperature_f} F`);
-        setTemperatureC(`${data.temperature_c} C`);
+        setTemperatureF(`${data.temperature_f} °F`);
+        setTemperatureC(`${data.temperature_c} °C`);
         setHumidity(`${data.humidity}%`);
         setDate(`Current Day: ${data.date}`);
       })
