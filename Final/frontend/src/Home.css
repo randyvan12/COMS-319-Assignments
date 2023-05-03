@@ -1,0 +1,25 @@
+/* .scroll-container {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 1s ease-in-out, max-height 1s ease-in-out;
+}
+
+.show-content {
+  max-height: 2000px;
+  opacity: 1;
+} */
+
+/* .transition-container {
+  transition: opacity 1s;
+}
+
+.transition-container.hidden {
+  opacity: 0;
+  display: none;
+}
+
+.transition-container.visible {
+  opacity: 1;
+  display: block;
+} */

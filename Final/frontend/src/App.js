@@ -1,16 +1,35 @@
 import './App.css';
 import React, { useState, useEffect } from 'react';
-
+import { Home } from './Home';
+import { Graph } from './Graph';
+import { Gauge } from './Gauge';
+import { About } from './About';
 function App() {
-  const [temperature, setTemperature] = useState('');
+  //Setting the data
+  const [temperaturef, setTemperatureF] = useState('');
+  const [temperaturec, setTemperatureC] = useState('');
   const [humidity, setHumidity] = useState('');
   const [date, setDate] = useState('');
 
+  const [page, setPage] = useState('home');
+
+  // page changes
+  function handlePageChange(newPage) {
+    setPage(newPage);
+  }
+
+  function getNavLinkClass(targetPage) {
+    return page === targetPage ? "nav-link active" : "nav-link";
+  }
+
+  // getting the data from public/data.json
+  // TODO Change getting it from the express backend. 
   useEffect(() => {
     fetch('./data.json')
       .then((response) => response.json())
       .then((data) => {
-        setTemperature(`${data.temperature_f} F / ${data.temperature_c} C`);
+        setTemperatureF(`${data.temperature_f} F`);
+        setTemperatureC(`${data.temperature_c} C`);
         setHumidity(`${data.humidity}%`);
         setDate(`Current Day: ${data.date}`);
       })
@@ -29,7 +48,7 @@ function App() {
       <header>
         <nav class="navbar navbar-dark" aria-label="Dark offcanvas navbar" style={{ backgroundColor: '#E8D5C4', }}>
           <div class="container-fluid">
-            <a class="navbar-brand text-dark" href="index.html">DHT22 Temperature Display</a>
+            <a class="navbar-brand text-dark" href="index.html">Team 47</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
               data-bs-target="#offcanvasNavbarDark" aria-controls="offcanvasNavbarDark">
               <span class="navbar-toggler-icon"></span>
@@ -44,16 +63,16 @@ function App() {
               <div class="offcanvas-body">
                 <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                   <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                    <a class={getNavLinkClass('home')} href='#' aria-current="page" onClick={() => handlePageChange('home')}>Home</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="graph.html">Graph</a>
+                    <a class={getNavLinkClass('graph')} href='#' onClick={() => handlePageChange('graph')}>Graph</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="#">Gauge</a>
+                    <a class={getNavLinkClass('gauge')} href='#' onClick={() => handlePageChange('gauge')}>Gauge</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="about.html">About Us</a>
+                    <a class={getNavLinkClass('about')} href='#' onClick={() => handlePageChange('about')}>About Us</a>
                   </li>
                 </ul>
               </div>
@@ -62,31 +81,12 @@ function App() {
         </nav>
       </header>
 
-      <main>
-        <div id="date" class="container-fluid d-flex justify-content-center text-center">
-          <h1>{date}</h1>
-        </div>
-        <div class="container py-4">
-          <div class="row align-items-md-stretch">
-            <div class="col-md-6">
-              <div class="h-100 p-5 rounded-3 d-flex justify-content-center text-center"
-                style={{ backgroundColor: '#3A98B9', }}>
-                <div id="temperature">
-                  <h1>🌡</h1>
-                  <h1>{temperature}</h1>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="h-100 p-5 border rounded-3 d-flex justify-content-center text-center" style={{ backgroundColor: '#FFF1DC', }}>
-                <div id="humidity">
-                  <h1>💧</h1>
-                  <h1>{humidity}</h1>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+      {/* Main content */}
+      <main style={{ backgroundColor: '#EEEEEE', minHeight: 'calc(100vh - 76px)' }}>
+        {page === 'home' && <Home date={date} temperaturef={temperaturef} temperaturec={temperaturec}  humidity={humidity} />}
+        {page === 'graph' && <Graph temperaturef={parseFloat(temperaturef.split(' ')[0])} temperaturec={parseFloat(temperaturec.split(' ')[0])}  humidityData={parseFloat(humidity.slice(0, -1))}/>}
+        {page === 'gauge' && <Gauge temperaturef={parseFloat(temperaturef.split(' ')[0])} temperaturec={parseFloat(temperaturec.split(' ')[0])} humidity={parseFloat(humidity.slice(0, -1))} />}
+        {page === 'about' && <About />}
       </main>
     </div>
   );

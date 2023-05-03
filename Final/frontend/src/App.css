@@ -4,6 +4,13 @@ $rosy-brown: #b7918cff;
 $tan: #c5a48aff;
 $citron: #ddc67bff;
 $icterine: #f8f272ff; */
+html,
+body,
+#root,
+.App {
+  margin: 0;
+  height: 100%;
+}
 body {
   padding-bottom: 20px;
 }
@@ -28,10 +35,11 @@ body {
 
 .b-example-divider {
   height: 3rem;
-  background-color: rgba(0, 0, 0, .1);
-  border: solid rgba(0, 0, 0, .15);
+  background-color: rgba(0, 0, 0, 0.1);
+  border: solid rgba(0, 0, 0, 0.15);
   border-width: 1px 0;
-  box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+  box-shadow: inset 0 0.5em 1.5em rgba(0, 0, 0, 0.1),
+    inset 0 0.125em 0.5em rgba(0, 0, 0, 0.15);
 }
 
 .b-example-vr {
@@ -41,7 +49,7 @@ body {
 }
 
 .bi {
-  vertical-align: -.125em;
+  vertical-align: -0.125em;
   fill: currentColor;
 }
 
@@ -78,10 +86,11 @@ body {
 
 .b-example-divider {
   height: 3rem;
-  background-color: rgba(0, 0, 0, .1);
-  border: solid rgba(0, 0, 0, .15);
+  background-color: rgba(0, 0, 0, 0.1);
+  border: solid rgba(0, 0, 0, 0.15);
   border-width: 1px 0;
-  box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+  box-shadow: inset 0 0.5em 1.5em rgba(0, 0, 0, 0.1),
+    inset 0 0.125em 0.5em rgba(0, 0, 0, 0.15);
 }
 
 .b-example-vr {
@@ -91,7 +100,7 @@ body {
 }
 
 .bi {
-  vertical-align: -.125em;
+  vertical-align: -0.125em;
   fill: currentColor;
 }
 
@@ -112,3 +121,17 @@ body {
   white-space: nowrap;
   -webkit-overflow-scrolling: touch;
 }
+
+/* .transition-container {
+  transition: opacity 1s;
+}
+
+.transition-container.hidden {
+  opacity: 0;
+  display: none;
+}
+
+.transition-container.visible {
+  opacity: 1;
+  display: block;
+} */
