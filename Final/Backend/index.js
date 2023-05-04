@@ -28,15 +28,15 @@ app.get("/", (req, res) => {
 app.get("/getData", async (req, res) => {
   await client.connect();
   console.log("Node connected successfully to GET MongoDB");
-  const query = {};
-  const results = await db
-    .collection("data")
-    .find(query)
-    .limit(100)
-    .toArray();
-  console.log(results);
+  const query = { _id: "1" };
+  const result = await db.collection("data").findOne(query);
+  if (!result) {
+    res.status(404).send("Item not found");
+    return;
+  }
+  console.log(result);
   res.status(200);
-  res.send(results);
+  res.send(result);
 });
 
 app.post("/addData", async (req, res) => {

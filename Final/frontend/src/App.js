@@ -26,11 +26,10 @@ function App() {
     fetch('http://localhost:8081/getData')
       .then((response) => response.json())
       .then((data) => {
-        const latestData = data[data.length - 1];
-        setTemperatureF(`${latestData.temperature_f} °F`);
-        setTemperatureC(`${latestData.temperature_c} °C`);
-        setHumidity(`${latestData.humidity}%`);
-        setDate(`Current Day: ${latestData.date}`);
+        setTemperatureF(`${data.temperature_f} °F`);
+        setTemperatureC(`${data.temperature_c} °C`);
+        setHumidity(`${data.humidity}%`);
+        setDate(`Current Day: ${data.date}`);
       })
       .catch((err) => {
         console.log('error:' + err);
