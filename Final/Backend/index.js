@@ -13,7 +13,7 @@ const host = "localhost";
 
 // Mongo
 const url = "mongodb://127.0.0.1:27017";
-const dbName = "reactdata";
+const dbName = "final";
 const client = new MongoClient(url);
 const db = client.db(dbName);
 
@@ -25,12 +25,12 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.get("/listProducts", async (req, res) => {
+app.get("/getData", async (req, res) => {
   await client.connect();
   console.log("Node connected successfully to GET MongoDB");
   const query = {};
   const results = await db
-    .collection("fakestore_catalog")
+    .collection("data")
     .find(query)
     .limit(100)
     .toArray();
@@ -39,100 +39,71 @@ app.get("/listProducts", async (req, res) => {
   res.send(results);
 });
 
-app.get("/:id", async (req, res) => {
-  const product = "product" + req.params.id + ".id";
-  const productId = Number(req.params.id);
-  console.log("Product to find :", product, " id :", productId);
-  await client.connect();
-  console.log("Node connected successfully to GET-id MongoDB");
-  const query = { [product]: productId };
-  const results = await db.collection("fakestore_catalog").findOne(query);
-  console.log("Results :", results);
-  if (!results) res.send("Not Found").status(404);
-  else res.send(results).status(200);
-});
+app.post("/addData", async (req, res) => {
+  const { date, temperature_f, temperature_c, humidity } = req.body;
 
-app.post("/addProduct", async (req, res) => {
-  await client.connect();
-  const keys = Object.keys(req.body);
-  const values = Object.values(req.body);
-  const k = keys[0];
-  const v = values[0];
-  console.log("Keys :", k, " Values", v);
-  const newDocument = { _id: "4", [k]: [v] };
-  const results = await db.collection("fakestore_catalog").insertOne(newDocument);
-  res.status(200);
-  res.send(results);
-});
-
-app.delete("/deleteProduct", async (req, res) => {
-  await client.connect();
-  const keys = Object.keys(req.body);
-  const k = keys[0];
-  const query = { [k]: { $exists: true } };
-  const results = await db.collection("fakestore_catalog").deleteOne(query);
-  res.status(200);
-  res.send(results);
-});
-
-app.post("/updatePrice", async (req, res) => {
-  const { id, price } = req.body;
-
-  if (!id || !price) {
-    res.status(400).send("Missing required fields: id and/or price");
+  if (!date || !temperature_f || !temperature_c || !humidity) {
+    res.status(400).send("Missing required fields: date, temperature_f, temperature_c, and/or humidity");
     return;
   }
 
   await client.connect();
-  console.log("Node connected successfully to updatePrice MongoDB");
 
-  const productKeyPattern = /^product\d+$/;
+  const count = await db.collection("data").countDocuments();
+  const newDocument = {
+    _id: (count + 1).toString(),
+    date: date,
+    temperature_f: temperature_f,
+    temperature_c: temperature_c,
+    humidity: humidity,
+  };
 
-  const docs = await db.collection("fakestore_catalog").find({}).toArray();
-  console.log('Docs:', docs); // Added log
+  const result = await db.collection("data").insertOne(newDocument);
+  res.status(200);
+  res.send(result);
+});
 
-  let foundProductKey;
-  let foundDoc;
-  let foundProductIndex;
+app.delete("/deleteData", async (req, res) => {
+  const { _id } = req.body;
 
-  for (const doc of docs) {
-    const productKeys = Object.keys(doc).filter((key) => productKeyPattern.test(key));
-    console.log('ProductKeys:', productKeys); // Added log
-
-    for (const productKey of productKeys) {
-      const productIndex = doc[productKey].findIndex((product) => product.id === id);
-      
-      if (productIndex !== -1) {
-        foundProductKey = productKey;
-        foundDoc = doc;
-        foundProductIndex = productIndex;
-        break;
-      }
-    }
-
-    if (foundProductKey && foundDoc && foundProductIndex !== undefined) {
-      break;
-    }
-  }
-
-  console.log('FoundProductKey:', foundProductKey); // Added log
-  console.log('FoundDoc:', foundDoc); // Added log
-
-  if (!foundProductKey || !foundDoc) {
-    res.status(404).send("Item not found");
+  if (!_id) {
+    res.status(400).send("Missing required field: _id");
     return;
   }
 
-  const query = { _id: foundDoc._id };
+  await client.connect();
+
+  const query = { _id: _id };
+  const result = await db.collection("data").deleteOne(query);
+  res.status(200);
+  res.send(result);
+});
+
+
+app.post("/updateData", async (req, res) => {
+  const { date, temperature_f, temperature_c, humidity } = req.body;
+
+  if (!date || !temperature_f || !temperature_c || !humidity) {
+    res.status(400).send("Missing required fields: date, temperature_f, temperature_c, and/or humidity");
+    return;
+  }
+
+  await client.connect();
+  console.log("Node connected successfully to updateData MongoDB");
+
+  const query = { _id: "1" };
   const update = {
     $set: {
-      [`${foundProductKey}.${foundProductIndex}.price`]: price,
+      date: date,
+      temperature_f: temperature_f,
+      temperature_c: temperature_c,
+      humidity: humidity,
     },
   };
   const options = { returnOriginal: false };
 
   try {
-    const result = await db.collection("fakestore_catalog").findOneAndUpdate(query, update, options);
+    const result = await db.collection("data").findOneAndUpdate(query, update, options);
 
     if (!result.value) {
       res.status(404).send("Item not found");
@@ -141,7 +112,7 @@ app.post("/updatePrice", async (req, res) => {
 
     res.status(200).send(result.value);
   } catch (error) {
-    console.error("Error updating price:", error);
+    console.error("Error updating data:", error);
     res.status(500).send("Internal server error");
   }
 });

@@ -22,16 +22,15 @@ function App() {
     return page === targetPage ? "nav-link active" : "nav-link";
   }
 
-  // getting the data from public/data.json
-  // TODO Change getting it from the express backend. 
   useEffect(() => {
-    fetch('./data.json')
+    fetch('http://localhost:8081/getData')
       .then((response) => response.json())
       .then((data) => {
-        setTemperatureF(`${data.temperature_f} °F`);
-        setTemperatureC(`${data.temperature_c} °C`);
-        setHumidity(`${data.humidity}%`);
-        setDate(`Current Day: ${data.date}`);
+        const latestData = data[data.length - 1];
+        setTemperatureF(`${latestData.temperature_f} °F`);
+        setTemperatureC(`${latestData.temperature_c} °C`);
+        setHumidity(`${latestData.humidity}%`);
+        setDate(`Current Day: ${latestData.date}`);
       })
       .catch((err) => {
         console.log('error:' + err);
@@ -83,8 +82,8 @@ function App() {
 
       {/* Main content */}
       <main style={{ backgroundColor: '#EEEEEE', minHeight: 'calc(100vh - 76px)' }}>
-        {page === 'home' && <Home date={date} temperaturef={temperaturef} temperaturec={temperaturec}  humidity={humidity} />}
-        {page === 'graph' && <Graph temperaturef={parseFloat(temperaturef.split(' ')[0])} temperaturec={parseFloat(temperaturec.split(' ')[0])}  humidityData={parseFloat(humidity.slice(0, -1))}/>}
+        {page === 'home' && <Home date={date} temperaturef={temperaturef} temperaturec={temperaturec} humidity={humidity} />}
+        {page === 'graph' && <Graph temperaturef={parseFloat(temperaturef.split(' ')[0])} temperaturec={parseFloat(temperaturec.split(' ')[0])} humidityData={parseFloat(humidity.slice(0, -1))} />}
         {page === 'gauge' && <Gauge temperaturef={parseFloat(temperaturef.split(' ')[0])} temperaturec={parseFloat(temperaturec.split(' ')[0])} humidity={parseFloat(humidity.slice(0, -1))} />}
         {page === 'about' && <About />}
       </main>
