@@ -33,16 +33,13 @@ function App() {
         <div class="collapse text-bg-dark" id="navbarHeader">
           <div class="container">
             <div class="row">
-              <div class="col-sm-8 col-md-7 py-4">
-                <h4>About</h4>
-                <p class="text-body-secondary">This is a product page using React, Express, and Mongodb for assignment 3 made by Randy Nguyen and Matthew Duncan.</p>
-              </div>
+              
             </div>
           </div>
         </div>
         <div class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
-          <div class="container">
-            <a href="#" class="navbar-brand d-flex align-items-center" onClick={handleLogoClick}>
+          <div class="container d-flex">
+            <a href="#" class="navbar-brand align-items-center" onClick={handleLogoClick}>
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
                 stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true" class="me-2"
                 viewBox="0 0 24 24">
@@ -51,8 +48,6 @@ function App() {
               </svg>
               <strong>Fake Store</strong>
             </a>
-
-            {/* <div class="collapse navbar-collapse" id="navbarNav"> */}
               <ul class="navbar-nav">
                 <li class="nav-item">
                   <button class={(view==="create" ? "active" : "") + " nav-link"} onClick={() => {setView("create")}}>Create</button>
@@ -171,7 +166,7 @@ function CreateView() {
         <div className="row g-4">
          <div className="form-group col-md-10">
          <hr class="my-4" />
-            <button type="submit" className="btn btn-primary">Sign in</button>
+            <button type="submit" className="btn btn-primary">Create Product</button>
           </div>
         </div>
 

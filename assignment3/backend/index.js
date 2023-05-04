@@ -3,7 +3,7 @@ var cors = require("cors");
 var app = express();
 var fs = require("fs");
 var bodyParser = require("body-parser");
-const { MongoClient } = require("mongodb");
+const { MongoClient, AggregationCursor } = require("mongodb");
 
 
 app.use(cors());
@@ -28,9 +28,7 @@ app.get("/", (req, res) => {
 });
 
 // READ ALL
-app.get("/products/", getAllProducts);
-
-async function getAllProducts(req, res) {
+app.get("/products/", async (req, res) => {
   await client.connect();
   console.log("Node connected successfully to GET MongoDB");
 
@@ -40,11 +38,19 @@ async function getAllProducts(req, res) {
     .find(query)
     .limit(100)
     .toArray();
+
+  results.forEach(r => {
+    // convert relative URLs
+    if (r.image.length > 0 && r.image[0] == '/') {
+      console.error("what?");
+      r.image = `http://${host}:${port}${r.image}`
+    }
+  })
     
   console.log(results);
   res.status(200);
   res.send(results);
-};
+});
 
 // READ
 app.get("/products/:id", async (req, res) => {
