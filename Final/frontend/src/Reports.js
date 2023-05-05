@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef} from 'react';
 import './Reports.css'
 
 export function Reports() {
@@ -32,14 +32,34 @@ export function Reports() {
             console.log('error:' + err);
         });
     }, []);
+ 
+    const update = (index, note) => {
+        console.log(`${index}: `, note);
+        let item = items[index];
+        item.note = note;
 
+        console.log("Updating:", item);
+
+        fetch(`http://localhost:8081/records/${item._id}`, {
+            method: 'PUT',
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(item)
+        })
+        .then((res) => {
+            console.log("delete res:", res.body);
+        })
+        .then(res => res.json())
+        .catch((err) => {
+            console.log('error:' + err);
+        });
+    };
 
     return (
         <main>
             <div class="container">
               <ReportHeader />
                 {
-                    items.map((i, index) => <ReportRow date={i.date} tempf={i.temperature_f} tempc={i.temperature_c} humidity={i.humidity} remove={() => remove(index)}/>)
+                    items.map((i, index) => <ReportRow initNote={i.note} date={i.date} tempf={i.temperature_f} tempc={i.temperature_c} humidity={i.humidity} remove={() => remove(index)} handleUpdate={(note) => update(index, note)} />)
                 }
             </div>
         </main>
@@ -49,7 +69,7 @@ export function Reports() {
 function ReportHeader() {
     return (        
     <div class="row">
-        <div class="col">
+        <div class="col-3">
             Timestamp
         </div>
         <div class="col">
@@ -61,17 +81,22 @@ function ReportHeader() {
         <div class="col">
             Humidity
         </div>
-        <div class="col ml-auto">
+        <div class="col-3">
+            Note
+        </div>
+        <div class="col-2 ml-auto">
             Controls
         </div>
     </div>
 );
 }
 
-function ReportRow({date, tempf, tempc, humidity, remove}) {
+function ReportRow({initNote, date, tempf, tempc, humidity, remove, handleUpdate}) {
+    let noteRef = useRef(null);
+
     return (
         <div class="row">
-            <div class="col">
+            <div class="col-3">
                 {date}
             </div>
             <div class="col">
@@ -83,7 +108,11 @@ function ReportRow({date, tempf, tempc, humidity, remove}) {
             <div class="col">
                 {humidity}
             </div>
-            <div class="col ml-auto">
+            <div class="col-3">
+                <input type="text" maxLength={32} size={22} ref={noteRef} value={initNote}></input>
+            </div>
+            <div class="col-2 ml-auto">
+                <button type="button" class="btn btn-primary" onClick={e => handleUpdate(noteRef.current.value)}>Update</button>
                 <button type="button" class="btn btn-danger" onClick={remove}>Remove</button>
             </div>
         </div>

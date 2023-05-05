@@ -82,8 +82,8 @@ app.post("/records/", async (req, res) => {
 
 // update an existing record
 app.put("/records/:rid", async (req, res) => {
-  const _id = req.params.rid;
-  const { date, temperature_f, temperature_c, humidity } = req.body;
+  const rid = req.params.rid;
+  const { date, temperature_f, temperature_c, humidity, note } = req.body;
 
   if (!date || !temperature_f || !temperature_c || !humidity) {
     res.status(400).send("Missing required fields: date, temperature_f, temperature_c, and/or humidity");
@@ -93,13 +93,14 @@ app.put("/records/:rid", async (req, res) => {
   await client.connect();
   console.log("Node connected successfully to updateData MongoDB");
 
-  const query = { _id };
+  const query = { _id: new ObjectId(rid) };
   const update = {
     $set: {
       date: date,
       temperature_f: temperature_f,
       temperature_c: temperature_c,
       humidity: humidity,
+      note: note
     },
   };
   const options = { returnOriginal: false };
@@ -130,7 +131,7 @@ app.delete("/records/:rid", async (req, res) => {
 
     console.log("Attempt to delete: ", result);
 
-    if (!result.acknowledged){ 
+    if (!result.acknowledged) { 
       res.status(500);
     } else if (result.deletedCount < 1) {
       res.status(404);
@@ -166,56 +167,3 @@ app.post("/addData", async (req, res) => {
   res.send(result);
 });
 
-// app.delete("/deleteData", async (req, res) => {
-//   const { _id } = req.body;
-
-//   if (!_id) {
-//     res.status(400).send("Missing required field: _id");
-//     return;
-//   }
-
-//   await client.connect();
-
-//   const query = { _id: _id };
-//   const result = await db.collection("data").deleteOne(query);
-//   res.status(200);
-//   res.send(result);
-// });
-
-
-// app.post("/updateData", async (req, res) => {
-//   const { date, temperature_f, temperature_c, humidity } = req.body;
-
-//   if (!date || !temperature_f || !temperature_c || !humidity) {
-//     res.status(400).send("Missing required fields: date, temperature_f, temperature_c, and/or humidity");
-//     return;
-//   }
-
-//   await client.connect();
-//   console.log("Node connected successfully to updateData MongoDB");
-
-//   const query = { _id: "1" };
-//   const update = {
-//     $set: {
-//       date: date,
-//       temperature_f: temperature_f,
-//       temperature_c: temperature_c,
-//       humidity: humidity,
-//     },
-//   };
-//   const options = { returnOriginal: false };
-
-//   try {
-//     const result = await db.collection("data").findOneAndUpdate(query, update, options);
-
-//     if (!result.value) {
-//       res.status(404).send("Item not found");
-//       return;
-//     }
-
-//     res.status(200).send(result.value);
-//   } catch (error) {
-//     console.error("Error updating data:", error);
-//     res.status(500).send("Internal server error");
-//   }
-// });
