@@ -3,7 +3,7 @@ var cors = require("cors");
 var app = express();
 var fs = require("fs");
 var bodyParser = require("body-parser");
-const { MongoClient } = require("mongodb");
+const { MongoClient, ObjectId } = require("mongodb");
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -121,14 +121,23 @@ app.put("/records/:rid", async (req, res) => {
 
 // remove a record
 app.delete("/records/:rid", async (req, res) => {
-    const _id = req.params.rid;
+    const id = req.params.rid;
 
     await client.connect();
   
-    const query = { _id: _id };
+    const query = { _id: new ObjectId(id) };
     const result = await db.collection("records").deleteOne(query);
 
-    res.status(200);
+    console.log("Attempt to delete: ", result);
+
+    if (!result.acknowledged){ 
+      res.status(500);
+    } else if (result.deletedCount < 1) {
+      res.status(404);
+    } else {
+      res.status(200);
+    }
+    
     res.send(result);
 });
   

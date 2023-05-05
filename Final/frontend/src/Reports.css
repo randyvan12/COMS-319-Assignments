@@ -1,0 +1,6 @@
+.col {
+    border-color: brown;
+    border-top-style: none;
+    border-bottom-style: solid;
+    border-left-style: solid;
+}
