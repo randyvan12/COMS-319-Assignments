@@ -8,6 +8,24 @@ export function Home(props) {
     const introOpacity = 1 - Math.min(scrollPosition / 200, 1);
     const dataOpacity = Math.min(scrollPosition / 200, 1);
 
+    const recordTemp = () => {
+        let item = {
+            date: props.date,
+            temperature_c: props.temperaturec,
+            temperature_f: props.temperaturef,
+            humidity: props.humidity
+        };
+
+        fetch('http://localhost:8081/records/', {
+            method: 'POST',
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(item)
+        })
+            .then((res) => {
+            })
+            .catch(e => console.error(e));
+    };
+
     return (
         <div>
             <div
@@ -59,6 +77,7 @@ export function Home(props) {
                         </div>
                     </div>
                 </div>
+                <div className=" d-flex justify-content-center"><button className="btn btn-primary" onClick={recordTemp}>Record Temperature</button> </div>
             </div>
         </div>
     );
