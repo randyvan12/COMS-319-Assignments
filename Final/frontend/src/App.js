@@ -4,6 +4,8 @@ import { Home } from './Home';
 import { Graph } from './Graph';
 import { Gauge } from './Gauge';
 import { About } from './About';
+import { Reports } from './Reports';
+
 function App() {
   //Setting the data
   const [temperaturef, setTemperatureF] = useState('');
@@ -70,6 +72,9 @@ function App() {
                     <a class={getNavLinkClass('gauge')} href='#' onClick={() => handlePageChange('gauge')}>Gauge</a>
                   </li>
                   <li class="nav-item">
+                  <a class={getNavLinkClass('reports')} href='#' onClick={() => handlePageChange('reports')}>Reports</a>
+                  </li>
+                  <li class="nav-item">
                     <a class={getNavLinkClass('about')} href='#' onClick={() => handlePageChange('about')}>About Us</a>
                   </li>
                 </ul>
@@ -84,6 +89,7 @@ function App() {
         {page === 'home' && <Home date={date} temperaturef={temperaturef} temperaturec={temperaturec} humidity={humidity} />}
         {page === 'graph' && <Graph temperaturef={parseFloat(temperaturef.split(' ')[0])} temperaturec={parseFloat(temperaturec.split(' ')[0])} humidityData={parseFloat(humidity.slice(0, -1))} />}
         {page === 'gauge' && <Gauge temperaturef={parseFloat(temperaturef.split(' ')[0])} temperaturec={parseFloat(temperaturec.split(' ')[0])} humidity={parseFloat(humidity.slice(0, -1))} />}
+        {page === 'reports' && <Reports></Reports>}
         {page === 'about' && <About />}
       </main>
     </div>
