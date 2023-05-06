@@ -25,11 +25,14 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
+
 app.get("/getData", async (req, res) => {
   await client.connect();
   console.log("Node connected successfully to GET MongoDB");
-  const query = { _id: "1" };
-  const result = await db.collection("data").findOne(query);
+  // const query = { _id: "1" };
+  // const result = await db.collection("data").findOne(query);
+  const result = await db.collection("data").find().sort({"date": -1}).limit(30).toArray();
+
   if (!result) {
     res.status(404).send("Item not found");
     return;
@@ -153,9 +156,7 @@ app.post("/addData", async (req, res) => {
 
   await client.connect();
 
-  const count = await db.collection("data").countDocuments();
   const newDocument = {
-    _id: (count + 1).toString(),
     date: date,
     temperature_f: temperature_f,
     temperature_c: temperature_c,
@@ -165,5 +166,6 @@ app.post("/addData", async (req, res) => {
   const result = await db.collection("data").insertOne(newDocument);
   res.status(200);
   res.send(result);
+  
 });
 

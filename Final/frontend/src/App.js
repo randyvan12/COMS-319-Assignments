@@ -31,10 +31,12 @@ function App() {
     fetch(`http://${process.env.REACT_APP_URL}/getData`)
       .then((response) => response.json())
       .then((data) => {
-        setTemperatureF(`${data.temperature_f} °F`);
-        setTemperatureC(`${data.temperature_c} °C`);
-        setHumidity(`${data.humidity}%`);
-        setDate(`Current Day: ${data.date}`);
+        if (data && data[0]) {
+          setTemperatureF(`${data[0].temperature_f} °F`);
+          setTemperatureC(`${data[0].temperature_c} °C`);
+          setHumidity(`${data[0].humidity}%`);
+          setDate(`Current Day: ${data[0].date}`);
+        }
       })
       .catch((err) => {
         console.log('error:' + err);
