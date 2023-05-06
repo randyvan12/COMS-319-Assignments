@@ -4,6 +4,11 @@ $rosy-brown: #b7918cff;
 $tan: #c5a48aff;
 $citron: #ddc67bff;
 $icterine: #f8f272ff; */
+
+:root {
+  --primary: #cc0033;
+}
+
 html,
 body,
 #root,
@@ -17,6 +22,11 @@ body {
 
 .navbar {
   margin-bottom: 20px;
+  background-color: var(--primary);
+}
+
+.navbar-brand {
+  color: white;
 }
 
 .bd-placeholder-img {
@@ -122,16 +132,10 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
-/* .transition-container {
-  transition: opacity 1s;
+.button {
+  margin: 20px;
 }
 
-.transition-container.hidden {
-  opacity: 0;
-  display: none;
+.about-tile {
+  background-color: #FFF1DC;
 }
-
-.transition-container.visible {
-  opacity: 1;
-  display: block;
-} */

@@ -13,6 +13,9 @@ function App() {
   const [humidity, setHumidity] = useState('');
   const [date, setDate] = useState('');
 
+  console.log("ENV: ", process.env);
+  console.log("url:", process.env.SERVER_URL);
+
   const [page, setPage] = useState('home');
 
   // page changes
@@ -25,7 +28,7 @@ function App() {
   }
 
   useEffect(() => {
-    fetch('http://localhost:8081/getData')
+    fetch(`http://${process.env.REACT_APP_URL}/getData`)
       .then((response) => response.json())
       .then((data) => {
         setTemperatureF(`${data.temperature_f} °F`);
@@ -40,15 +43,10 @@ function App() {
 
   return (
     <div className="App" style={{ backgroundColor: '#EEEEEE', }}>
-      {/* colors
-      blue: #3A98B9
-      tan: #FFF1DC
-      beige: #E8D5C4
-      grey: #EEEEEE */}
       <header>
-        <nav class="navbar navbar-dark" aria-label="Dark offcanvas navbar" style={{ backgroundColor: '#E8D5C4', }}>
+        <nav class="navbar navbar-dark" aria-label="Dark offcanvas navbar">
           <div class="container-fluid">
-            <a class="navbar-brand text-dark" href="index.html">Team 47</a>
+            <a class="navbar-brand text-light" href="index.html">Team 47</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
               data-bs-target="#offcanvasNavbarDark" aria-controls="offcanvasNavbarDark">
               <span class="navbar-toggler-icon"></span>

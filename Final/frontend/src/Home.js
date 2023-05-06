@@ -16,7 +16,7 @@ export function Home(props) {
             humidity: props.humidity
         };
 
-        fetch('http://localhost:8081/records/', {
+        fetch(`http://${process.env.REACT_APP_URL}/records/`, {
             method: 'POST',
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(item)

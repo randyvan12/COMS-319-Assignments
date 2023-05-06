@@ -7,7 +7,7 @@ export function Reports() {
     const remove = (index) => {
         const id = items[index]._id;
 
-        fetch(`http://localhost:8081/records/${id}`, { method: 'DELETE' })
+        fetch(`http://${process.env.REACT_APP_URL}/records/${id}`, { method: 'DELETE' })
         .then((res) => {
             console.log("delete res:", res.body);
         })
@@ -21,7 +21,7 @@ export function Reports() {
     };
 
     useEffect(() => {
-    fetch('http://localhost:8081/records')
+    fetch(`http://${process.env.REACT_APP_URL}/records`)
         .then((response) => response.json())
         .then((data) => {
             setItems([...data]);
@@ -39,7 +39,7 @@ export function Reports() {
 
         console.log("Updating:", item);
 
-        fetch(`http://localhost:8081/records/${item._id}`, {
+        fetch(`http://${process.env.REACT_APP_URL}/records/${item._id}`, {
             method: 'PUT',
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(item)
