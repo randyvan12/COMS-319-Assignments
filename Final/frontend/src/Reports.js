@@ -60,7 +60,7 @@ export function Reports() {
             <div class="container">
               <ReportHeader />
                 {
-                    items.map((i, index) => <ReportRow initNote={i.note} id={i._id} date={i.date} tempf={i.temperature_f} tempc={i.temperature_c} humidity={i.humidity} remove={() => remove(index)} handleUpdate={(note) => update(index, note)} />)
+                    items.map((i, index) => <ReportRow item={i} initNote={i.note} id={i._id} date={i.date} tempf={i.temperature_f} tempc={i.temperature_c} humidity={i.humidity} remove={() => remove(index)} handleUpdate={(note) => update(index, note)} />)
                 }
             </div>
         </main>
@@ -92,25 +92,25 @@ function ReportHeader() {
 );
 }
 
-function ReportRow({id, initNote, date, tempf, tempc, humidity, remove, handleUpdate}) {
+function ReportRow({ item , remove, handleUpdate}) {
     let noteRef = useRef(null);
 
     return (
-        <div class="row" key={id}>
+        <div class="row" key={item._id}>
             <div class="col-3">
-                {date}
+                {item.date}
             </div>
             <div class="col">
-                {tempf}
+                {item.temperature_f}
             </div>
             <div class="col">
-                {tempc}
+                {item.temperature_c}
             </div>
             <div class="col">
-                {humidity}
+                {item.humidity}
             </div>
             <div class="col-3">
-                <input type="text" maxLength={32} size={22} ref={noteRef} defaultValue={initNote}></input>
+                <input type="text" maxLength={32} size={22} ref={noteRef} defaultValue={item.note}></input>
             </div>
             <div class="col-2 ml-auto">
                 <button type="button" class="btn btn-primary" onClick={e => handleUpdate(noteRef.current.value)}>Update</button>
