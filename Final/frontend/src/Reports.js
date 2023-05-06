@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef} from 'react';
-import './Reports.css'
 
 export function Reports() {
     let [items, setItems] = useState([]);
@@ -52,6 +51,8 @@ export function Reports() {
         .catch((err) => {
             console.log('error:' + err);
         });
+
+        setItems([...items]);
     };
 
     return (
@@ -59,7 +60,7 @@ export function Reports() {
             <div class="container">
               <ReportHeader />
                 {
-                    items.map((i, index) => <ReportRow initNote={i.note} date={i.date} tempf={i.temperature_f} tempc={i.temperature_c} humidity={i.humidity} remove={() => remove(index)} handleUpdate={(note) => update(index, note)} />)
+                    items.map((i, index) => <ReportRow initNote={i.note} id={i._id} date={i.date} tempf={i.temperature_f} tempc={i.temperature_c} humidity={i.humidity} remove={() => remove(index)} handleUpdate={(note) => update(index, note)} />)
                 }
             </div>
         </main>
@@ -91,11 +92,11 @@ function ReportHeader() {
 );
 }
 
-function ReportRow({initNote, date, tempf, tempc, humidity, remove, handleUpdate}) {
+function ReportRow({id, initNote, date, tempf, tempc, humidity, remove, handleUpdate}) {
     let noteRef = useRef(null);
 
     return (
-        <div class="row">
+        <div class="row" key={id}>
             <div class="col-3">
                 {date}
             </div>
@@ -109,7 +110,7 @@ function ReportRow({initNote, date, tempf, tempc, humidity, remove, handleUpdate
                 {humidity}
             </div>
             <div class="col-3">
-                <input type="text" maxLength={32} size={22} ref={noteRef} value={initNote}></input>
+                <input type="text" maxLength={32} size={22} ref={noteRef} defaultValue={initNote}></input>
             </div>
             <div class="col-2 ml-auto">
                 <button type="button" class="btn btn-primary" onClick={e => handleUpdate(noteRef.current.value)}>Update</button>
